@@ -1,7 +1,5 @@
 package crisisresponseteam;
 
-import java.util.Random;
-
 import nlib.components.Component;
 import nlib.components.ComponentManager;
 

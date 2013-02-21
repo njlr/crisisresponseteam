@@ -1,8 +1,7 @@
 package crisisresponseteam.simulation;
 
+import nlib.components.BasicComponentRenderable;
 import nlib.components.ComponentRenderable;
-import nlib.physics.steering.BasicVehicleTwoAxes;
-import nlib.utils.Utils;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -13,16 +12,23 @@ import org.newdawn.slick.geom.Vector2f;
 
 import uk.ac.ed.gamedevsoc.collisions.Collider;
 
-public strictfp final class Ambulance extends BasicVehicleTwoAxes implements ComponentRenderable, Collider {
+public strictfp final class Ambulance extends BasicComponentRenderable implements ComponentRenderable, Collider {
 	
-	private final static float MASS = 1f;
-	private final static float DRAG_COEFFICIENT = 0.01f;
-	private final static float MAX_SPEED = 4f;
-	private final static float MAX_FORCE = 1f;
-	private final static float TURN_SPEED = 2f;
-	private final static float MAX_FORCE_LATERAL = 0.05f;
+	private static final float ACCELERATION = 0.003f;
+	private static final float MAX_SPEED = 0.2f;
+	private static final float TURN_SPEED = 1f;
+	private static final float MAX_TURN = 10f;
+	private static final float DRAG = 0.01f;
+	private static final float WHEEL_BASE = 16f;
 	
-	private final static float RADIUS = 16f;
+	private final Vector2f initialPosition;
+	
+	private final Vector2f position;
+	
+	private float rotation;
+	private float speed;
+	
+	private float steering;
 	
 	private Image image;
 	
@@ -34,7 +40,11 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 	
 	public Ambulance(final long id, final Vector2f initialPosition) {
 		
-		super(id, initialPosition, MASS, DRAG_COEFFICIENT, MAX_SPEED, MAX_FORCE, TURN_SPEED, MAX_FORCE_LATERAL);
+		super(id);
+		
+		this.initialPosition = initialPosition;
+		
+		this.position = new Vector2f();
 	}
 	
 	@Override
@@ -42,9 +52,15 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 		
 		super.init(gameContainer);
 		
-		this.image = new Image("assets/Ambulance.png");
+		this.image = new Image("assets/gfx/Ambulance.png");
 		
-		this.image.setCenterOfRotation(image.getWidth() / 2f, image.getHeight() / 2f);
+		this.image.setCenterOfRotation(this.image.getWidth() / 2f, this.image.getHeight() / 2f);
+		
+		this.position.set(this.initialPosition);
+		
+		this.rotation = 0f;
+		this.speed = 0f;
+		this.steering = 0f;
 	}
 	
 	@Override
@@ -54,26 +70,73 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 		
 		if (gameContainer.getInput().isKeyDown(Input.KEY_LEFT)) {
 			
-			if (this.isMoving()) {
+			this.steering -= TURN_SPEED;
+			
+			if (this.steering < -MAX_TURN) {
 				
-				this.turn(-TURN_SPEED);
+				this.steering = -MAX_TURN;
 			}
 		}
-		
-		if (gameContainer.getInput().isKeyDown(Input.KEY_RIGHT)) {
+		else if (gameContainer.getInput().isKeyDown(Input.KEY_RIGHT)) {
 			
-			if (this.isMoving()) {
+			this.steering += TURN_SPEED;
+			
+			if (this.steering > MAX_TURN) {
 				
-				this.turn(TURN_SPEED);
+				this.steering = MAX_TURN;
 			}
+		}
+		else {
+			
+			float i = -this.steering;
+			
+			if (i > TURN_SPEED) {
+				
+				i = TURN_SPEED;
+			}
+			else if (i < -TURN_SPEED) {
+				
+				i = -TURN_SPEED;
+			}
+			
+			this.steering += i;
 		}
 		
 		if (gameContainer.getInput().isKeyDown(Input.KEY_UP)) {
 			
-			this.addSteering(new Vector2f(this.getRotation()).scale(10f));
+			this.speed += ACCELERATION;
+			
+			if (this.speed > MAX_SPEED) {
+				
+				this.speed = MAX_SPEED;
+			}
 		}
 		
-		this.image.setRotation(this.getRotation());
+		if (gameContainer.getInput().isKeyDown(Input.KEY_DOWN)) {
+			
+			this.speed -= ACCELERATION;
+			
+			if (this.speed < -MAX_SPEED) {
+				
+				this.speed = -MAX_SPEED;
+			}
+		}
+		
+		this.image.setRotation(this.rotation);
+		
+		////
+		final Vector2f h = new Vector2f(this.rotation);
+		
+		final Vector2f fWheel = this.position.copy().add(h.copy().scale(WHEEL_BASE / 2f));
+		final Vector2f bWheel = this.position.copy().sub(h.copy().scale(WHEEL_BASE / 2f));
+		
+		bWheel.add(h.copy().scale(speed * delta));
+		fWheel.add(new Vector2f(rotation + steering).scale(speed * delta));
+		
+		this.position.set(bWheel.copy().add(fWheel).scale(0.5f));
+		this.rotation = (float) fWheel.sub(bWheel).getTheta();
+		
+		this.speed *= 1f - DRAG;
 	}
 	
 	@Override
@@ -85,12 +148,24 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 	@Override
 	public float getRadius() {
 		
-		return RADIUS;
+		return WHEEL_BASE;
 	}
 
 	@Override
 	public boolean canCollide(final Collider other) {
 		
 		return true;
+	}
+
+	@Override
+	public float getX() {
+		
+		return this.position.getX();
+	}
+
+	@Override
+	public float getY() {
+		
+		return this.position.getY();
 	}
 }

@@ -52,7 +52,9 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		
 		super.init(gameContainer);
 		
-		this.image = new Image("assets/Pedestrian.png");
+		this.image = new Image("assets/gfx/Ped1.png");
+		
+		this.image.setCenterOfRotation(this.image.getWidth() / 2f, this.image.getHeight() / 2f);
 		
 		this.wander = this.random.nextFloat() * 360f;
 	}
@@ -62,7 +64,11 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		
 		super.update(gameContainer, delta);
 		
+		this.image.setRotation(this.getRotation());
+		
 		this.addSteering(this.wander());
+		
+		this.turn(Steering.turn(this.getRotation(), (float) this.getVelocity().getTheta()));
 	}
 	
 	@Override

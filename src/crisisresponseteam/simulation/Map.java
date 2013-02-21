@@ -52,8 +52,6 @@ public strictfp final class Map extends BasicComponentRenderable {
 							interval);
 					
 					this.componentManager.addComponent(pedestrianSpawn);
-					
-					System.out.println("SPAWN");
 				}
 				else if (type.equals("CrisisSite")) {
 					
