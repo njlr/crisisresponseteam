@@ -10,13 +10,18 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
-public strictfp final class Ambulance extends BasicVehicleTwoAxes implements ComponentRenderable {
+import uk.ac.ed.gamedevsoc.collisions.Collider;
+
+public strictfp final class Ambulance extends BasicVehicleTwoAxes implements ComponentRenderable, Collider {
 	
 	private final static float MASS = 1f;
 	private final static float DRAG_COEFFICIENT = 0.01f;
 	private final static float MAX_SPEED = 4f;
 	private final static float MAX_FORCE = 1f;
 	private final static float TURN_SPEED = 2f;
+	private final static float MAX_FORCE_LATERAL = 0.05f;
+	
+	private final static float RADIUS = 16f;
 	
 	private Image image;
 	
@@ -28,7 +33,7 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 	
 	public Ambulance(final long id, final Vector2f initialPosition) {
 		
-		super(id, initialPosition, MASS, DRAG_COEFFICIENT, MAX_SPEED, MAX_FORCE, TURN_SPEED, 0.01f);
+		super(id, initialPosition, MASS, DRAG_COEFFICIENT, MAX_SPEED, MAX_FORCE, TURN_SPEED, MAX_FORCE_LATERAL);
 	}
 	
 	@Override
@@ -63,6 +68,18 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 	@Override
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
 		
-		graphics.drawImage(this.image, this.getPosition().getX(), this.getPosition().getY());
+		graphics.drawImage(this.image, this.getX(), this.getY());
+	}
+
+	@Override
+	public float getRadius() {
+		
+		return RADIUS;
+	}
+
+	@Override
+	public boolean canCollide(final Collider other) {
+		
+		return true;
 	}
 }
