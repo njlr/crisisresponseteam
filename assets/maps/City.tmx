@@ -25,12 +25,12 @@
   </data>
  </layer>
  <objectgroup name="Spawn" width="100" height="100">
-  <object name="0" type="CrisisSite" x="1284" y="736">
+  <object name="0" type="CrisisSite" x="1280" y="736" width="16" height="16">
    <properties>
     <property name="Name" value="14 Street"/>
    </properties>
   </object>
-  <object name="0" type="PedestrianSpawn" x="1136" y="743">
+  <object name="0" type="PedestrianSpawn" x="1136" y="743" width="16" height="16">
    <properties>
     <property name="Interval" value="5000"/>
    </properties>
