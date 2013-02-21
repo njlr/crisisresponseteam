@@ -30,7 +30,7 @@
     <property name="Name" value="14 Street"/>
    </properties>
   </object>
-  <object type="PedestrianSpawn" x="1136" y="743">
+  <object name="0" type="PedestrianSpawn" x="1136" y="743">
    <properties>
     <property name="Interval" value="5000"/>
    </properties>
