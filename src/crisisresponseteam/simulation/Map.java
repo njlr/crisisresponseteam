@@ -14,6 +14,7 @@ public strictfp final class Map extends BasicComponentRenderable {
 	
 	private final ComponentManager<Component> componentManager;
 	private final GoreManager goreManager;
+	
 	private final String ref;
 	
 	private TiledMap map;
@@ -22,6 +23,16 @@ public strictfp final class Map extends BasicComponentRenderable {
 	public float getDepth() {
 		
 		return Constants.DEPTH_MAP;
+	}
+	
+	public float getWidth() {
+		
+		return this.map.getWidth() * this.map.getTileWidth();
+	}
+	
+	public float getHeight() {
+		
+		return this.map.getHeight() * this.map.getTileHeight();
 	}
 	
 	public Map(final long id, final ComponentManager<Component> componentManager, final GoreManager goreManager, final String ref) {
@@ -80,7 +91,7 @@ public strictfp final class Map extends BasicComponentRenderable {
 			}
 		}
 	}
-	public static final float DEPTH_GORE = -1f;
+	
 	@Override
 	public void update(final GameContainer gameContainer, final int delta) throws SlickException {
 		
@@ -94,6 +105,6 @@ public strictfp final class Map extends BasicComponentRenderable {
 		
 		super.render(gameContainer, graphics);
 		
-		this.map.render(-800, -800);
+		this.map.render(0, 0);
 	}
 }

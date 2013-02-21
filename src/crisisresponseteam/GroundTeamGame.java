@@ -50,7 +50,7 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		this.componentManager.addComponent(ambulance);
 		
 		// View
-		this.view = new View(this.componentManager.takeId(), ambulance);
+		this.view = new View(this.componentManager.takeId(), map, ambulance);
 		
 		this.componentManager.addComponent(this.view);
 		

@@ -10,6 +10,7 @@ public strictfp final class View extends BasicComponent {
 	private static final int WIDTH = 640;
 	private static final int HEIGHT = 480;
 	
+	private final Map map;
 	private final Ambulance ambulance;
 	
 	private float x;
@@ -25,10 +26,11 @@ public strictfp final class View extends BasicComponent {
 		return this.y;
 	}
 	
-	public View(final long id, final Ambulance ambulance) {
+	public View(final long id, final Map map, final Ambulance ambulance) {
 		
 		super(id);
 		
+		this.map = map;
 		this.ambulance = ambulance;
 	}
 	
@@ -52,5 +54,25 @@ public strictfp final class View extends BasicComponent {
 		
 		this.x = this.ambulance.getX() - WIDTH / 2f;
 		this.y = this.ambulance.getY() - HEIGHT / 2f;
+		
+		if (this.x < 0f) {
+			
+			this.x = 0f;
+		}
+		
+		if (this.y < 0f) {
+			
+			this.y = 0f;
+		}
+		
+		if (this.x + WIDTH > this.map.getWidth()) {
+			
+			this.x = this.map.getWidth() - WIDTH;
+		}
+		
+		if (this.y + HEIGHT > this.map.getHeight()) {
+			
+			this.y = this.map.getHeight() - HEIGHT;
+		}
 	}
 }
