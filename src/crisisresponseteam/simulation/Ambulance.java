@@ -2,6 +2,7 @@ package crisisresponseteam.simulation;
 
 import nlib.components.ComponentRenderable;
 import nlib.physics.steering.BasicVehicleTwoAxes;
+import nlib.utils.Utils;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -42,6 +43,8 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 		super.init(gameContainer);
 		
 		this.image = new Image("assets/Ambulance.png");
+		
+		this.image.setCenterOfRotation(image.getWidth() / 2f, image.getHeight() / 2f);
 	}
 	
 	@Override
@@ -51,18 +54,26 @@ public strictfp final class Ambulance extends BasicVehicleTwoAxes implements Com
 		
 		if (gameContainer.getInput().isKeyDown(Input.KEY_LEFT)) {
 			
-			this.turn(-TURN_SPEED);
+			if (this.isMoving()) {
+				
+				this.turn(-TURN_SPEED);
+			}
 		}
 		
 		if (gameContainer.getInput().isKeyDown(Input.KEY_RIGHT)) {
 			
-			this.turn(TURN_SPEED);
+			if (this.isMoving()) {
+				
+				this.turn(TURN_SPEED);
+			}
 		}
 		
 		if (gameContainer.getInput().isKeyDown(Input.KEY_UP)) {
 			
 			this.addSteering(new Vector2f(this.getRotation()).scale(10f));
 		}
+		
+		this.image.setRotation(this.getRotation());
 	}
 	
 	@Override
