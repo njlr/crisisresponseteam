@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="16" tileheight="16">
+ <objectgroup name="Object Group 1" width="0" height="0">
+  <object name="Object" type="PedestrianSpawn" x="208" y="80" width="16" height="16">
+   <properties>
+    <property name="Interval" value="10000"/>
+   </properties>
+  </object>
+  <object name="" type="CrisisSite" x="64" y="224" width="16" height="16">
+   <properties>
+    <property name="Name" value="14 Main Street"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

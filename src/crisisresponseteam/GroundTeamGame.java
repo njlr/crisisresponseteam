@@ -1,7 +1,5 @@
 package crisisresponseteam;
 
-import java.util.Random;
-
 import nlib.components.Component;
 import nlib.components.ComponentManager;
 
@@ -16,6 +14,8 @@ import uk.ac.ed.gamedevsoc.collisions.Collision;
 import uk.ac.ed.gamedevsoc.collisions.CollisionManager;
 
 import crisisresponseteam.simulation.Ambulance;
+import crisisresponseteam.simulation.CrisisManager;
+import crisisresponseteam.simulation.Map;
 import crisisresponseteam.simulation.Pedestrian;
 
 public strictfp final class GroundTeamGame extends BasicGame {
@@ -31,13 +31,8 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		this.componentManager = new ComponentManager<Component>();
 		
 		this.componentManager.addComponent(new Ambulance(this.componentManager.takeId(), new Vector2f(64f, 64f)));
-		
-		final Random random = new Random();
-		
-		for (int i = 0; i < 8; i++) {
-			
-			this.componentManager.addComponent(new Pedestrian(this.componentManager.takeId(), new Vector2f(random.nextInt(640), random.nextInt(480))));
-		}
+		this.componentManager.addComponent(new CrisisManager(this.componentManager.takeId(), this.componentManager));
+		this.componentManager.addComponent(new Map(this.componentManager.takeId(), this.componentManager, "assets/maps/City.tmx"));
 	}
 	
 	@Override
@@ -55,12 +50,27 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		
 		for (final Collision i : this.collisionManager.getCollisions()) {
 			
-			for 
+			if (i.getA() instanceof Ambulance) {
+				
+				if (i.getB() instanceof Pedestrian) {
+					
+					((Pedestrian) i.getB()).runOver();
+				}
+			}
+			else if (i.getB() instanceof Ambulance) {
+				
+				if (i.getA() instanceof Pedestrian) {
+					
+					((Pedestrian) i.getA()).runOver();
+				}
+			}
 		}
 	}
 	
 	@Override
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
+		
+		graphics.setAntiAlias(false);
 		
 		this.componentManager.render(gameContainer, graphics);
 	}
