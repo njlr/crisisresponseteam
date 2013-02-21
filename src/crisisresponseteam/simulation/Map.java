@@ -13,15 +13,24 @@ import nlib.components.ComponentManager;
 public strictfp final class Map extends BasicComponentRenderable {
 	
 	private final ComponentManager<Component> componentManager;
+	private final GoreManager goreManager;
 	private final String ref;
 	
 	private TiledMap map;
 	
-	public Map(final long id, final ComponentManager<Component> componentManager, final String ref) {
+	@Override
+	public float getDepth() {
+		
+		return Constants.DEPTH_MAP;
+	}
+	
+	public Map(final long id, final ComponentManager<Component> componentManager, final GoreManager goreManager, final String ref) {
 		
 		super(id);
 		
 		this.componentManager = componentManager;
+		this.goreManager = goreManager;
+		
 		this.ref = ref;
 	}
 	
@@ -48,6 +57,7 @@ public strictfp final class Map extends BasicComponentRenderable {
 					final PedestrianSpawn pedestrianSpawn = new PedestrianSpawn(
 							this.componentManager.takeId(), 
 							this.componentManager, 
+							this.goreManager, 
 							new Vector2f(x, y), 
 							interval);
 					
@@ -70,7 +80,7 @@ public strictfp final class Map extends BasicComponentRenderable {
 			}
 		}
 	}
-	
+	public static final float DEPTH_GORE = -1f;
 	@Override
 	public void update(final GameContainer gameContainer, final int delta) throws SlickException {
 		

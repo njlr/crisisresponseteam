@@ -36,8 +36,8 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 	
 	@Override
 	public float getDepth() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return Constants.DEPTH_AMBULANCE;
 	}
 	
 	public Vector2f getPosition() {

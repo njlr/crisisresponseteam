@@ -15,6 +15,7 @@ import uk.ac.ed.gamedevsoc.collisions.CollisionManager;
 
 import crisisresponseteam.simulation.Ambulance;
 import crisisresponseteam.simulation.CrisisManager;
+import crisisresponseteam.simulation.GoreManager;
 import crisisresponseteam.simulation.Map;
 import crisisresponseteam.simulation.Pedestrian;
 
@@ -30,9 +31,13 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		
 		this.componentManager = new ComponentManager<Component>();
 		
+		final GoreManager goreManager = new GoreManager(this.componentManager.takeId());
+		
+		this.componentManager.addComponent(goreManager);
+		
 		this.componentManager.addComponent(new Ambulance(this.componentManager.takeId(), new Vector2f(64f, 64f)));
+		this.componentManager.addComponent(new Map(this.componentManager.takeId(), this.componentManager, goreManager, "assets/maps/City.tmx"));
 		this.componentManager.addComponent(new CrisisManager(this.componentManager.takeId(), this.componentManager));
-		this.componentManager.addComponent(new Map(this.componentManager.takeId(), this.componentManager, "assets/maps/City.tmx"));
 	}
 	
 	@Override
