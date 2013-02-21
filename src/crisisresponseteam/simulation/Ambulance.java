@@ -14,12 +14,14 @@ import uk.ac.ed.gamedevsoc.collisions.Collider;
 
 public strictfp final class Ambulance extends BasicComponentRenderable implements ComponentRenderable, Collider {
 	
+	private static final float RADIUS = 16f;
+	
 	private static final float ACCELERATION = 0.003f;
 	private static final float MAX_SPEED = 0.2f;
 	private static final float TURN_SPEED = 1f;
 	private static final float MAX_TURN = 10f;
 	private static final float DRAG = 0.01f;
-	private static final float WHEEL_BASE = 16f;
+	private static final float WHEEL_BASE = 12f;
 	
 	private final Vector2f initialPosition;
 	
@@ -36,6 +38,11 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 	public float getDepth() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public Vector2f getPosition() {
+		
+		return this.position.copy();
 	}
 	
 	public Ambulance(final long id, final Vector2f initialPosition) {
@@ -124,16 +131,16 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 		
 		this.image.setRotation(this.rotation);
 		
-		////
 		final Vector2f h = new Vector2f(this.rotation);
 		
 		final Vector2f fWheel = this.position.copy().add(h.copy().scale(WHEEL_BASE / 2f));
 		final Vector2f bWheel = this.position.copy().sub(h.copy().scale(WHEEL_BASE / 2f));
 		
-		bWheel.add(h.copy().scale(speed * delta));
-		fWheel.add(new Vector2f(rotation + steering).scale(speed * delta));
+		bWheel.add(h.copy().scale(this.speed * delta));
+		fWheel.add(new Vector2f(this.rotation + this.steering).scale(this.speed * delta));
 		
 		this.position.set(bWheel.copy().add(fWheel).scale(0.5f));
+		
 		this.rotation = (float) fWheel.sub(bWheel).getTheta();
 		
 		this.speed *= 1f - DRAG;
@@ -148,7 +155,7 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 	@Override
 	public float getRadius() {
 		
-		return WHEEL_BASE;
+		return RADIUS;
 	}
 
 	@Override

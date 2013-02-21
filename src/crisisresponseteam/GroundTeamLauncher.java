@@ -3,6 +3,7 @@ package crisisresponseteam;
 import nlib.utils.Utils;
 
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 
 public strictfp final class GroundTeamLauncher {
@@ -18,9 +19,11 @@ public strictfp final class GroundTeamLauncher {
 		
 		final GroundTeamGame groundTeamGame = new GroundTeamGame();
 		
-		final AppGameContainer container = new AppGameContainer(groundTeamGame);
+		final ScalableGame scalableGame = new ScalableGame(groundTeamGame, 640, 480, true);
 		
-		container.setDisplayMode(640, 480, false);
+		final AppGameContainer container = new AppGameContainer(scalableGame);
+		
+		container.setDisplayMode(960, 720, false);
 		container.setVSync(true);
 		
 		container.start();

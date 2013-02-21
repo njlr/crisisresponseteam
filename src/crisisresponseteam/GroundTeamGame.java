@@ -14,6 +14,7 @@ import uk.ac.ed.gamedevsoc.collisions.Collision;
 import uk.ac.ed.gamedevsoc.collisions.CollisionManager;
 
 import crisisresponseteam.simulation.Ambulance;
+import crisisresponseteam.simulation.CrisisManager;
 import crisisresponseteam.simulation.Map;
 import crisisresponseteam.simulation.Pedestrian;
 
@@ -30,6 +31,7 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		this.componentManager = new ComponentManager<Component>();
 		
 		this.componentManager.addComponent(new Ambulance(this.componentManager.takeId(), new Vector2f(64f, 64f)));
+		this.componentManager.addComponent(new CrisisManager(this.componentManager.takeId(), this.componentManager));
 		this.componentManager.addComponent(new Map(this.componentManager.takeId(), this.componentManager, "assets/maps/City.tmx"));
 	}
 	
@@ -67,6 +69,8 @@ public strictfp final class GroundTeamGame extends BasicGame {
 	
 	@Override
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
+		
+		graphics.setAntiAlias(false);
 		
 		this.componentManager.render(gameContainer, graphics);
 	}

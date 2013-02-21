@@ -55,7 +55,17 @@ public strictfp final class Map extends BasicComponentRenderable {
 				}
 				else if (type.equals("CrisisSite")) {
 					
+					final float x = this.map.getObjectX(g, o);
+					final float y = this.map.getObjectY(g, o);
 					
+					final String name = this.map.getObjectProperty(g, o, "Name", "???");
+					
+					final CrisisSite crisisSite = new CrisisSite(
+							this.componentManager.takeId(), 
+							new Vector2f(x, y), 
+							name);
+					
+					this.componentManager.addComponent(crisisSite);
 				}
 			}
 		}
