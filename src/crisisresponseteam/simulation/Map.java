@@ -13,15 +13,35 @@ import nlib.components.ComponentManager;
 public strictfp final class Map extends BasicComponentRenderable {
 	
 	private final ComponentManager<Component> componentManager;
+	private final GoreManager goreManager;
+	
 	private final String ref;
 	
 	private TiledMap map;
 	
-	public Map(final long id, final ComponentManager<Component> componentManager, final String ref) {
+	@Override
+	public float getDepth() {
+		
+		return Constants.DEPTH_MAP;
+	}
+	
+	public float getWidth() {
+		
+		return this.map.getWidth() * this.map.getTileWidth();
+	}
+	
+	public float getHeight() {
+		
+		return this.map.getHeight() * this.map.getTileHeight();
+	}
+	
+	public Map(final long id, final ComponentManager<Component> componentManager, final GoreManager goreManager, final String ref) {
 		
 		super(id);
 		
 		this.componentManager = componentManager;
+		this.goreManager = goreManager;
+		
 		this.ref = ref;
 	}
 	
@@ -48,6 +68,7 @@ public strictfp final class Map extends BasicComponentRenderable {
 					final PedestrianSpawn pedestrianSpawn = new PedestrianSpawn(
 							this.componentManager.takeId(), 
 							this.componentManager, 
+							this.goreManager, 
 							new Vector2f(x, y), 
 							interval);
 					

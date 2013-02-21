@@ -15,8 +15,10 @@ import uk.ac.ed.gamedevsoc.collisions.CollisionManager;
 
 import crisisresponseteam.simulation.Ambulance;
 import crisisresponseteam.simulation.CrisisManager;
+import crisisresponseteam.simulation.GoreManager;
 import crisisresponseteam.simulation.Map;
 import crisisresponseteam.simulation.Pedestrian;
+import crisisresponseteam.simulation.View;
 
 public strictfp final class GroundTeamGame extends BasicGame {
 	
@@ -24,15 +26,36 @@ public strictfp final class GroundTeamGame extends BasicGame {
 	
 	private final CollisionManager collisionManager = new CollisionManager(64, 64);
 	
+	private final View view;
+	
 	public GroundTeamGame() {
 		
 		super("CRISIS RESPONSE TEAM");
 		
 		this.componentManager = new ComponentManager<Component>();
 		
-		this.componentManager.addComponent(new Ambulance(this.componentManager.takeId(), new Vector2f(64f, 64f)));
+		// Gore Manager
+		final GoreManager goreManager = new GoreManager(this.componentManager.takeId());
+		
+		this.componentManager.addComponent(goreManager);
+		
+		// Map
+		final Map map = new Map(this.componentManager.takeId(), this.componentManager, goreManager, "assets/maps/City.tmx");
+		
+		this.componentManager.addComponent(map);
+		
+		// Ambulance
+		final Ambulance ambulance = new Ambulance(this.componentManager.takeId(), new Vector2f(64f, 64f), map);
+		
+		this.componentManager.addComponent(ambulance);
+		
+		// View
+		this.view = new View(this.componentManager.takeId(), map, ambulance);
+		
+		this.componentManager.addComponent(this.view);
+		
+		// Crisis Manager
 		this.componentManager.addComponent(new CrisisManager(this.componentManager.takeId(), this.componentManager));
-		this.componentManager.addComponent(new Map(this.componentManager.takeId(), this.componentManager, "assets/maps/City.tmx"));
 	}
 	
 	@Override
@@ -72,6 +95,10 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		
 		graphics.setAntiAlias(false);
 		
+		graphics.translate(-this.view.getX(), -this.view.getY());
+		
 		this.componentManager.render(gameContainer, graphics);
+		
+		graphics.translate(0f, 0f);
 	}
 }

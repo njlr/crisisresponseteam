@@ -25,6 +25,8 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 	
 	private final Vector2f initialPosition;
 	
+	private final Map map;
+	
 	private final Vector2f position;
 	
 	private float rotation;
@@ -36,8 +38,8 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 	
 	@Override
 	public float getDepth() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return Constants.DEPTH_AMBULANCE;
 	}
 	
 	public Vector2f getPosition() {
@@ -45,11 +47,13 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 		return this.position.copy();
 	}
 	
-	public Ambulance(final long id, final Vector2f initialPosition) {
+	public Ambulance(final long id, final Vector2f initialPosition, final Map map) {
 		
 		super(id);
 		
 		this.initialPosition = initialPosition;
+		
+		this.map = map;
 		
 		this.position = new Vector2f();
 	}

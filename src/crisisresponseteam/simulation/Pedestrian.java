@@ -28,11 +28,15 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 	private static final float WANDER_CIRCLE_DISTANCE = 16f;
 	private static final float WANDER_CIRCLE_CHANGE = 5f;
 	
+	private final GoreManager goreManager;
+	
 	private final Random random;
 	
 	private Image image;
 	
 	private float wander;
+	
+	private boolean isAlive;
 	
 	@Override
 	public float getDepth() {
@@ -40,11 +44,15 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		return 0;
 	}
 	
-	public Pedestrian(final long id, final Vector2f initialPosition) {
+	public Pedestrian(final long id, final Vector2f initialPosition, final GoreManager goreManager) {
 		
 		super(id, initialPosition, MASS, DRAG_COEFFICIENT, MAX_SPEED, MAX_FORCE, TURN_SPEED);
 		
+		this.goreManager = goreManager;
+		
 		this.random = new Random();
+		
+		this.isAlive = false;
 	}
 	
 	@Override
@@ -57,6 +65,8 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		this.image.setCenterOfRotation(this.image.getWidth() / 2f, this.image.getHeight() / 2f);
 		
 		this.wander = this.random.nextFloat() * 360f;
+		
+		this.isAlive = true;
 	}
 	
 	@Override
@@ -91,7 +101,16 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 	
 	public void runOver() {
 		
-		System.out.println("RUN OVER");
+		if (!this.isAlive) {
+			
+			return;
+		}
+		
+		this.triggerDestroy();
+		
+		this.isAlive = false;
+		
+		this.goreManager.emit(this.getPosition());
 	}
 	
 	private Vector2f wander() {

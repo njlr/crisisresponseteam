@@ -11,17 +11,21 @@ import nlib.components.ComponentManager;
 public strictfp final class PedestrianSpawn extends BasicComponent {
 	
 	private final ComponentManager<Component> componentManager;
+	private final GoreManager goreManager;
+	
 	private final Vector2f position;
 	
 	private final int interval;
 	
 	private int timeTillSpawn;
 	
-	public PedestrianSpawn(final long id, final ComponentManager<Component> componentManager, final Vector2f position, final int interval) {
+	public PedestrianSpawn(final long id, final ComponentManager<Component> componentManager, final GoreManager goreManager, final Vector2f position, final int interval) {
 		
 		super(id);
 		
 		this.componentManager = componentManager;
+		this.goreManager = goreManager;
+		
 		this.position = position;
 		
 		this.interval = interval;
@@ -53,7 +57,8 @@ public strictfp final class PedestrianSpawn extends BasicComponent {
 		
 		final Pedestrian pedestrian = new Pedestrian(
 				this.componentManager.takeId(), 
-				this.position);
+				this.position, 
+				this.goreManager);
 		
 		this.componentManager.addComponent(pedestrian);
 	}
