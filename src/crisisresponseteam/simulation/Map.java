@@ -94,6 +94,6 @@ public strictfp final class Map extends BasicComponentRenderable {
 		
 		super.render(gameContainer, graphics);
 		
-		this.map.render(0, 0);
+		this.map.render(-800, -800);
 	}
 }
