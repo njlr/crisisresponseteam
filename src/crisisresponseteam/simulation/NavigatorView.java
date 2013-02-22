@@ -115,10 +115,10 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 	public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
 		
 		super.render(gameContainer, graphics);
-		
+		int yy = -this.random.nextInt(32);
 		for (int x = 0; x < WIDTH; x += this.scan.getWidth()) {
 			
-			for (int y = -this.random.nextInt(32); y < HEIGHT; y+= this.scan.getHeight()) {
+			for (int y = yy; y < HEIGHT; y+= this.scan.getHeight()) {
 				
 				this.scan.draw(x + this.getX(), y + this.getY());
 			}

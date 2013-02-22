@@ -29,7 +29,7 @@ public strictfp final class NavigatorLauncher {
 		Utils.linkLwjgl();
 		
 		final InetSocketAddress serverAddress = new InetSocketAddress(
-				InetAddress.getByName("morales"), 1234);
+				InetAddress.getByName("amanasro"), 1234);
 		
 		SessionClient<SessionConfig, PlayerInfo> sessionClient = new SessionClient<SessionConfig, PlayerInfo>(
 				new PlayerInfoUuid(), serverAddress);
