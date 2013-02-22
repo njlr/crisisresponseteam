@@ -8,9 +8,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import uk.ac.ed.gamedevsoc.collisions.Collider;
+import uk.ac.ed.gamedevsoc.collisions.CollisionUtils;
 
 public strictfp final class Ambulance extends BasicComponentRenderable implements ComponentRenderable, Collider {
 	
@@ -148,6 +151,30 @@ public strictfp final class Ambulance extends BasicComponentRenderable implement
 		this.rotation = (float) fWheel.sub(bWheel).getTheta();
 		
 		this.speed *= 1f - DRAG;
+		
+		final Circle circle = new Circle(this.position.getX(), this.position.getY(), this.getRadius());
+		
+		final int tileX = (int) (this.position.getX() / this.map.getTileWidth());
+		final int tileY = (int) (this.position.getY() / this.map.getTileHeight());
+		
+		for (int x = tileX - 1; x < tileX + 1; x++) {
+			
+			for (int y = tileY - 1; y < tileY + 1; y++) {
+				
+				if (this.map.isSolid(x, y)) {
+					
+					final Rectangle rectangle = new Rectangle(
+							tileX * this.map.getTileWidth(), 
+							tileY * this.map.getTileHeight(), 
+							this.map.getTileWidth(), 
+							this.map.getTileHeight());
+					
+					final Vector2f depth = CollisionUtils.collisionDepth(circle, rectangle);
+					
+					this.position.add(depth);
+				}
+			}
+		}
 	}
 	
 	@Override
