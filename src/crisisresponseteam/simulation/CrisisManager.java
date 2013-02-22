@@ -7,6 +7,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 
 import nlib.components.BasicComponentRenderable;
 import nlib.components.Component;
@@ -83,7 +84,7 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 					
 					for (final Ambulance i : ambulances) {
 						
-						if (this.currentCrisisSite.getPosition().distanceSquared(i.getPosition()) < CRISIS_SITE_RADIUS * CRISIS_SITE_RADIUS) {
+						if (this.currentCrisisSite.getPosition().distanceSquared(new Vector2f(i.getX(), i.getY())) < CRISIS_SITE_RADIUS * CRISIS_SITE_RADIUS) {
 							
 							this.currentCrisisSite = this.getNextCrisisSite();
 							

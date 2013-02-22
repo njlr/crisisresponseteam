@@ -1,209 +1,140 @@
 package crisisresponseteam.simulation;
 
 import nlib.components.BasicComponentRenderable;
-import nlib.components.ComponentRenderable;
 
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Vector2f;
 
-import uk.ac.ed.gamedevsoc.collisions.Collider;
-import uk.ac.ed.gamedevsoc.collisions.CollisionUtils;
-
-public strictfp final class Ambulance extends BasicComponentRenderable implements ComponentRenderable, Collider {
+public class Ambulance extends BasicComponentRenderable {
 	
-	private static final float RADIUS = 16f;
+	//private static final float DEGTORAD = 0.0174532925199432957f;
+	private static final float RADTODEG = 57.295779513082320876f;
 	
-	private static final float ACCELERATION = 0.003f;
-	private static final float MAX_SPEED = 0.2f;
-	private static final float TURN_SPEED = 1f;
-	private static final float MAX_TURN = 10f;
-	private static final float DRAG = 0.01f;
-	private static final float WHEEL_BASE = 12f;
+	private static final float FORCE = 10000000f;
+	private static final float TURN_RATE = 100000f; 
 	
-	private final Vector2f initialPosition;
-	
-	private final Map map;
-	
-	private final Vector2f position;
-	
-	private float rotation;
-	private float speed;
-	
-	private float steering;
+	private final Body body;
 	
 	private Image image;
 	
-	@Override
-	public float getDepth() {
+	public float getX() {
 		
-		return Constants.DEPTH_AMBULANCE;
+		return this.body.getPosition().x;
 	}
 	
-	public Vector2f getPosition() {
+	public float getY() {
 		
-		return this.position.copy();
+		return this.body.getPosition().y; 
 	}
 	
-	public Ambulance(final long id, final Vector2f initialPosition, final Map map) {
+	public Ambulance(final long id, final World world, final float x, final float y) {
 		
 		super(id);
 		
-		this.initialPosition = initialPosition;
+		final BodyDef bodyDef = new BodyDef();
 		
-		this.map = map;
+		bodyDef.type = BodyType.DYNAMIC;
+		bodyDef.position = new Vec2(x, y);
+		bodyDef.linearDamping = 0.1f;
+		bodyDef.angularDamping = 1f;
 		
-		this.position = new Vector2f();
+		this.body = world.createBody(bodyDef);
+		
+		final PolygonShape box = new PolygonShape();
+		
+		box.setAsBox(64, 32f);
+		
+		final FixtureDef fixtureDef = new FixtureDef();
+		
+		fixtureDef.density = 1f;
+		fixtureDef.shape = box;
+	    fixtureDef.friction = 0.3f;
+	    
+	    this.body.createFixture(fixtureDef);
 	}
 	
 	@Override
-	public void init(final GameContainer gameContainer) throws SlickException {
+	public void init(GameContainer gameContainer) throws SlickException {
 		
 		super.init(gameContainer);
 		
 		this.image = new Image("assets/gfx/Ambulance.png");
 		
 		this.image.setCenterOfRotation(this.image.getWidth() / 2f, this.image.getHeight() / 2f);
-		
-		this.position.set(this.initialPosition);
-		
-		this.rotation = 0f;
-		this.speed = 0f;
-		this.steering = 0f;
 	}
 	
 	@Override
-	public void update(final GameContainer gameContainer, final int delta) throws SlickException {
+	public void update(GameContainer gameContainer, int delta) throws SlickException {
 		
 		super.update(gameContainer, delta);
 		
-		if (gameContainer.getInput().isKeyDown(Input.KEY_LEFT)) {
-			
-			this.steering -= TURN_SPEED;
-			
-			if (this.steering < -MAX_TURN) {
-				
-				this.steering = -MAX_TURN;
-			}
-		}
-		else if (gameContainer.getInput().isKeyDown(Input.KEY_RIGHT)) {
-			
-			this.steering += TURN_SPEED;
-			
-			if (this.steering > MAX_TURN) {
-				
-				this.steering = MAX_TURN;
-			}
-		}
-		else {
-			
-			float i = -this.steering;
-			
-			if (i > TURN_SPEED) {
-				
-				i = TURN_SPEED;
-			}
-			else if (i < -TURN_SPEED) {
-				
-				i = -TURN_SPEED;
-			}
-			
-			this.steering += i;
-		}
+		boolean up = false;
+		boolean down = false;
+		boolean left = false;
+		boolean right = false;
 		
 		if (gameContainer.getInput().isKeyDown(Input.KEY_UP)) {
 			
-			this.speed += ACCELERATION;
-			
-			if (this.speed > MAX_SPEED) {
-				
-				this.speed = MAX_SPEED;
-			}
+			up = true;
 		}
 		
 		if (gameContainer.getInput().isKeyDown(Input.KEY_DOWN)) {
 			
-			this.speed -= ACCELERATION;
-			
-			if (this.speed < -MAX_SPEED) {
-				
-				this.speed = -MAX_SPEED;
-			}
+			down = true;
 		}
 		
-		this.image.setRotation(this.rotation);
-		
-		final Vector2f h = new Vector2f(this.rotation);
-		
-		final Vector2f fWheel = this.position.copy().add(h.copy().scale(WHEEL_BASE / 2f));
-		final Vector2f bWheel = this.position.copy().sub(h.copy().scale(WHEEL_BASE / 2f));
-		
-		bWheel.add(h.copy().scale(this.speed * delta));
-		fWheel.add(new Vector2f(this.rotation + this.steering).scale(this.speed * delta));
-		
-		this.position.set(bWheel.copy().add(fWheel).scale(0.5f));
-		
-		this.rotation = (float) fWheel.sub(bWheel).getTheta();
-		
-		this.speed *= 1f - DRAG;
-		
-		final Circle circle = new Circle(this.position.getX(), this.position.getY(), this.getRadius());
-		
-		final int tileX = (int) (this.position.getX() / this.map.getTileWidth());
-		final int tileY = (int) (this.position.getY() / this.map.getTileHeight());
-		
-		for (int x = tileX - 1; x < tileX + 1; x++) {
+		if (gameContainer.getInput().isKeyDown(Input.KEY_LEFT)) {
 			
-			for (int y = tileY - 1; y < tileY + 1; y++) {
-				
-				if (this.map.isSolid(x, y)) {
-					
-					final Rectangle rectangle = new Rectangle(
-							tileX * this.map.getTileWidth(), 
-							tileY * this.map.getTileHeight(), 
-							this.map.getTileWidth(), 
-							this.map.getTileHeight());
-					
-					final Vector2f depth = CollisionUtils.collisionDepth(circle, rectangle);
-					
-					this.position.add(depth);
-				}
-			}
+			left = true;
 		}
+		
+		if (gameContainer.getInput().isKeyDown(Input.KEY_RIGHT)) {
+			
+			right = true;
+		}
+		
+		if (up) {
+			
+			this.body.applyForce(
+					this.body.getWorldVector(new Vec2(0, 1)).mulLocal(FORCE), 
+					this.body.getWorldPoint(new Vec2(0, 8)));
+		}
+		
+		float speed = Math.max(0f, this.body.getLinearVelocity().length() / 5f);
+		
+		if (left) {
+			
+			this.body.applyAngularImpulse(-speed * TURN_RATE);
+		}
+		
+		if (right) {
+			
+			this.body.applyAngularImpulse(speed * TURN_RATE);
+		}
+		
+		this.image.setRotation(this.body.getAngle() * RADTODEG);
+		
+		System.out.println(this.body.getAngle());
 	}
 	
 	@Override
-	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
+	public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
 		
-		graphics.drawImage(this.image, this.getX(), this.getY());
-	}
-
-	@Override
-	public float getRadius() {
+		super.render(gameContainer, graphics);
 		
-		return RADIUS;
-	}
-
-	@Override
-	public boolean canCollide(final Collider other) {
-		
-		return true;
-	}
-
-	@Override
-	public float getX() {
-		
-		return this.position.getX();
-	}
-
-	@Override
-	public float getY() {
-		
-		return this.position.getY();
+		graphics.drawImage(
+				this.image, 
+				this.body.getWorldCenter().x - this.image.getWidth() / 2f, 
+				this.body.getWorldCenter().y - this.image.getHeight() / 2f);
 	}
 }
