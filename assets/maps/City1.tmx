@@ -275,11 +275,6 @@
     <property name="Interval" value="16000"/>
    </properties>
   </object>
-  <object name="Spawn" type="PedestrianSpawn" x="118" y="107" width="32" height="32">
-   <properties>
-    <property name="Interval" value="17000"/>
-   </properties>
-  </object>
   <object name="Spawn" type="PedestrianSpawn" x="2668" y="1522" width="32" height="32">
    <properties>
     <property name="Interval" value="12000"/>
