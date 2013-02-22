@@ -19,6 +19,8 @@ public strictfp final class Map extends BasicComponentRenderable {
 	
 	private TiledMap map;
 	
+	private boolean[][] isSolid;
+	
 	@Override
 	public float getDepth() {
 		
@@ -33,6 +35,41 @@ public strictfp final class Map extends BasicComponentRenderable {
 	public float getHeight() {
 		
 		return this.map.getHeight() * this.map.getTileHeight();
+	}
+	
+	public int getTileWidth() {
+		
+		return this.map.getTileWidth();
+	}
+	
+	public int getTileHeight() {
+		
+		return this.map.getTileHeight();
+	}
+	
+	public boolean isSolid(final int x, final int y) {
+		
+		if (x < 0) {
+			
+			return true;
+		}
+		
+		if (y < 0) {
+			
+			return true;
+		}
+		
+		if (x >= this.map.getWidth()) {
+			
+			return true;
+		}
+		
+		if (y >= this.map.getHeight()) {
+			
+			return true;
+		}
+		
+		return this.isSolid[y][x];
 	}
 	
 	public Map(final long id, final ComponentManager<Component> componentManager, final GoreManager goreManager, final String ref) {
@@ -51,6 +88,32 @@ public strictfp final class Map extends BasicComponentRenderable {
 		super.init(gameContainer);
 		
 		this.map = new TiledMap(this.ref);
+		
+		this.isSolid = new boolean[this.map.getHeight()][this.map.getWidth()];
+		
+		for (int y = 0; y < this.isSolid.length; y++) {
+			
+			for (int x = 0; x < this.isSolid[0].length; x++) {
+				
+				this.isSolid[y][x] = false;
+			}
+		}
+		
+		for (int l = 0; l < this.map.getLayerCount(); l++) {
+			
+			for (int y = 0; y < this.map.getHeight(); y++) {
+				
+				for (int x = 0; x < this.map.getWidth(); x++) {
+					
+					final int tileID = this.map.getTileId(x, y, l);
+					
+					if (Boolean.parseBoolean(this.map.getTileProperty(tileID, "Solid", "false"))) {
+						
+						this.isSolid[y][x] = true;
+					}
+				}
+			}
+		}
 		
 		for (int g = 0; g < this.map.getObjectGroupCount(); g++) {
 			
