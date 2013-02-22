@@ -171,6 +171,8 @@ public strictfp final class Map extends BasicComponentRenderable {
 							name);
 					
 					this.componentManager.addComponent(crisisSite);
+					
+					System.out.println(crisisSite.getName());
 				}
 			}
 		}

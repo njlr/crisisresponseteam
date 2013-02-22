@@ -53,8 +53,6 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 		
 		this.timeLeft = TIME_START;
 		
-		System.out.println(this.currentCrisisSite);
-		
 		this.image = new Image("assets/gfx/CrisisZone.png");
 	}
 	
@@ -65,6 +63,11 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 		
 		if (this.timeLeft > 0) {
 			
+			if (this.currentCrisisSite == null) {
+				
+				this.currentCrisisSite = getNextCrisisSite();
+			}
+			
 			this.timeLeft -= delta;
 			
 			if (this.timeLeft <= 0) {
@@ -72,11 +75,6 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 				// TODO: Game Over!
 			}
 			else {
-				
-				if (this.currentCrisisSite == null) {
-					
-					this.currentCrisisSite = getNextCrisisSite();
-				}
 				
 				if (this.currentCrisisSite != null) {
 					
@@ -131,6 +129,8 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 			return null;
 		}
 		else {
+			
+			System.out.println(list.get(this.random.nextInt(list.size())));
 			
 			return list.get(this.random.nextInt(list.size()));
 		}
