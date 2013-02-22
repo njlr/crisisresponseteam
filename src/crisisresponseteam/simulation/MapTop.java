@@ -19,6 +19,8 @@ public class MapTop extends BasicComponentRenderable {
 	public MapTop(final long id, Map map) {
 		
 		super(id);
+		
+		this.map = map;
 	}
 	
 	@Override

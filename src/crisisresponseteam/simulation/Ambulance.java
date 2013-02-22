@@ -52,6 +52,12 @@ public class Ambulance extends BasicComponentRenderable {
 		return this.body.getPosition().y / GroundTeamGame.PHYSICS_SCALAR; 
 	}
 	
+	@Override
+	public float getDepth() {
+		// TODO Auto-generated method stub
+		return Constants.DEPTH_AMBULANCE;
+	}
+	
 	public Ambulance(final long id, final World world, final float x, final float y, final Session<SessionConfig, PlayerInfo> session) {
 		
 		super(id);

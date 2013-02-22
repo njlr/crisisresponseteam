@@ -97,7 +97,7 @@ public strictfp final class Pedestrian extends BasicComponentRenderable implemen
 		
 		super.init(gameContainer);
 		
-		this.image = new Image("assets/gfx/Ped1.png"); 
+		this.image = new Image("assets/gfx/Ped" + (1 + this.random.nextInt(7)) + ".png"); 
 		
 		this.image.setCenterOfRotation(this.image.getWidth() / 2f, this.image.getHeight() / 2f);
 		
