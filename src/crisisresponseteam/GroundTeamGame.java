@@ -48,7 +48,7 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		this.componentManager.addComponent(goreManager);
 		
 		// Map
-		final Map map = new Map(this.componentManager.takeId(), this.componentManager, goreManager, "assets/maps/City.tmx");
+		final Map map = new Map(this.componentManager.takeId(), this.componentManager, goreManager, "assets/maps/City1.tmx");
 		
 		this.componentManager.addComponent(map);
 		

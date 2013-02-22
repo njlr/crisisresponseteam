@@ -127,4 +127,16 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		
 		return Steering.seek(this.getPosition(), this.getVelocity(), target);
 	}
+
+	@Override
+	public float getX() {
+		
+		return this.getPosition().getX();
+	}
+
+	@Override
+	public float getY() {
+		
+		return this.getPosition().getY();
+	}
 }
