@@ -1,10 +1,19 @@
 package crisisresponseteam.simulation;
 
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
+
+import crisisresponseteam.GroundTeamGame;
 
 import nlib.components.BasicComponentRenderable;
 import nlib.components.Component;
@@ -15,11 +24,10 @@ public strictfp final class Map extends BasicComponentRenderable {
 	private final ComponentManager<Component> componentManager;
 	private final GoreManager goreManager;
 	
+	private final World world;
 	private final String ref;
 	
 	private TiledMap map;
-	
-	private boolean[][] isSolid;
 	
 	@Override
 	public float getDepth() {
@@ -47,35 +55,11 @@ public strictfp final class Map extends BasicComponentRenderable {
 		return this.map.getTileHeight();
 	}
 	
-	public boolean isSolid(final int x, final int y) {
-		
-		if (x < 0) {
-			
-			return true;
-		}
-		
-		if (y < 0) {
-			
-			return true;
-		}
-		
-		if (x >= this.map.getWidth()) {
-			
-			return true;
-		}
-		
-		if (y >= this.map.getHeight()) {
-			
-			return true;
-		}
-		
-		return this.isSolid[y][x];
-	}
-	
-	public Map(final long id, final ComponentManager<Component> componentManager, final GoreManager goreManager, final String ref) {
+	public Map(final long id, final World world, final ComponentManager<Component> componentManager, final GoreManager goreManager, final String ref) {
 		
 		super(id);
 		
+		this.world = world;
 		this.componentManager = componentManager;
 		this.goreManager = goreManager;
 		
@@ -89,13 +73,13 @@ public strictfp final class Map extends BasicComponentRenderable {
 		
 		this.map = new TiledMap(this.ref);
 		
-		this.isSolid = new boolean[this.map.getHeight()][this.map.getWidth()];
+		boolean[][] isSolid = new boolean[this.map.getHeight()][this.map.getWidth()];
 		
-		for (int y = 0; y < this.isSolid.length; y++) {
+		for (int y = 0; y < isSolid.length; y++) {
 			
-			for (int x = 0; x < this.isSolid[0].length; x++) {
+			for (int x = 0; x < isSolid[0].length; x++) {
 				
-				this.isSolid[y][x] = false;
+				isSolid[y][x] = false;
 			}
 		}
 		
@@ -109,8 +93,45 @@ public strictfp final class Map extends BasicComponentRenderable {
 					
 					if (Boolean.parseBoolean(this.map.getTileProperty(tileID, "Solid", "false"))) {
 						
-						this.isSolid[y][x] = true;
+						isSolid[y][x] = true;
 					}
+				}
+			}
+		}
+		
+		final float hw = this.map.getTileWidth() / 2f * GroundTeamGame.PHYSICS_SCALAR;
+		final float hh = this.map.getTileHeight() / 2f * GroundTeamGame.PHYSICS_SCALAR;
+		
+		for (int y = 0; y < isSolid.length; y++) {
+			
+			for (int x = 0; x < isSolid[0].length; x++) {
+				
+				if (isSolid[y][x]) {
+					
+					final BodyDef bodyDef = new BodyDef();
+					
+					bodyDef.type = BodyType.STATIC;
+					
+					bodyDef.position = new Vec2(
+							x * GroundTeamGame.PHYSICS_SCALAR * this.map.getTileWidth() + hw, 
+							y * GroundTeamGame.PHYSICS_SCALAR * this.map.getTileHeight() + hh);
+					
+					bodyDef.fixedRotation = true;
+					
+					final Body body = this.world.createBody(bodyDef);
+					
+					final PolygonShape box = new PolygonShape();
+					
+					box.setAsBox(hw, hh);
+					
+					final FixtureDef fixtureDef = new FixtureDef();
+					
+					fixtureDef.density = 1f;
+					fixtureDef.shape = box;
+					fixtureDef.restitution = 0.1f;
+					fixtureDef.friction = 0f;
+				    
+				    body.createFixture(fixtureDef);
 				}
 			}
 		}

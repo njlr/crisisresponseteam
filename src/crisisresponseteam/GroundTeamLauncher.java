@@ -25,6 +25,7 @@ public strictfp final class GroundTeamLauncher {
 		
 		//container.setDisplayMode(960, 720, false);
 		container.setVSync(true);
+		container.setTargetFrameRate(30);
 		
 		container.start();
 	}

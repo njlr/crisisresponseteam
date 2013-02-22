@@ -2,6 +2,7 @@ package crisisresponseteam.simulation;
 
 import nlib.components.BasicComponentRenderable;
 
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -15,26 +16,33 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import crisisresponseteam.GroundTeamGame;
+
 public class Ambulance extends BasicComponentRenderable {
 	
 	//private static final float DEGTORAD = 0.0174532925199432957f;
 	private static final float RADTODEG = 57.295779513082320876f;
 	
-	private static final float FORCE = 10000000f;
-	private static final float TURN_RATE = 100000f; 
+	private static final float FORCE = 100f;
+	private static final float FORCE_REVERSE = 10f;
+	
+	private static final float TURN_RATE = 500f;
+	private static final float TURN_SPEED_LIMITER = 5f;
 	
 	private final Body body;
+	
+	private float rotation;
 	
 	private Image image;
 	
 	public float getX() {
 		
-		return this.body.getPosition().x;
+		return this.body.getPosition().x / GroundTeamGame.PHYSICS_SCALAR;
 	}
 	
 	public float getY() {
 		
-		return this.body.getPosition().y; 
+		return this.body.getPosition().y / GroundTeamGame.PHYSICS_SCALAR; 
 	}
 	
 	public Ambulance(final long id, final World world, final float x, final float y) {
@@ -44,7 +52,10 @@ public class Ambulance extends BasicComponentRenderable {
 		final BodyDef bodyDef = new BodyDef();
 		
 		bodyDef.type = BodyType.DYNAMIC;
-		bodyDef.position = new Vec2(x, y);
+		bodyDef.position = new Vec2(
+				x * GroundTeamGame.PHYSICS_SCALAR, 
+				y * GroundTeamGame.PHYSICS_SCALAR);
+		
 		bodyDef.linearDamping = 0.1f;
 		bodyDef.angularDamping = 1f;
 		
@@ -52,15 +63,23 @@ public class Ambulance extends BasicComponentRenderable {
 		
 		final PolygonShape box = new PolygonShape();
 		
-		box.setAsBox(64, 32f);
+		box.setAsBox(12f * GroundTeamGame.PHYSICS_SCALAR, 16f * GroundTeamGame.PHYSICS_SCALAR);
+		
+		final CircleShape circle = new CircleShape();
+		
+		circle.m_p.set(0f, 0f);
+		circle.m_radius = 12f * GroundTeamGame.PHYSICS_SCALAR;
 		
 		final FixtureDef fixtureDef = new FixtureDef();
 		
-		fixtureDef.density = 1f;
-		fixtureDef.shape = box;
-	    fixtureDef.friction = 0.3f;
+		fixtureDef.density = 100f;
+		fixtureDef.shape = circle;
+		fixtureDef.restitution = 0.1f;
+		fixtureDef.friction = 0f;
 	    
 	    this.body.createFixture(fixtureDef);
+	    
+	    this.rotation = 0f;
 	}
 	
 	@Override
@@ -71,6 +90,8 @@ public class Ambulance extends BasicComponentRenderable {
 		this.image = new Image("assets/gfx/Ambulance.png");
 		
 		this.image.setCenterOfRotation(this.image.getWidth() / 2f, this.image.getHeight() / 2f);
+		
+		this.rotation = this.body.getAngle();
 	}
 	
 	@Override
@@ -105,26 +126,35 @@ public class Ambulance extends BasicComponentRenderable {
 		
 		if (up) {
 			
-			this.body.applyForce(
+			this.body.applyLinearImpulse(
 					this.body.getWorldVector(new Vec2(0, 1)).mulLocal(FORCE), 
-					this.body.getWorldPoint(new Vec2(0, 8)));
+					this.body.getWorldCenter());
 		}
 		
-		float speed = Math.max(0f, this.body.getLinearVelocity().length() / 5f);
+		if (down) {
+			
+			this.body.applyLinearImpulse(
+					this.body.getWorldVector(new Vec2(0, -1)).mulLocal(FORCE_REVERSE), 
+					this.body.getWorldPoint(new Vec2(0, 48)));
+		}
+		
+		float turnScalar = Math.max(0f, Math.min(this.body.getLinearVelocity().length() /  TURN_SPEED_LIMITER, 1f));
 		
 		if (left) {
 			
-			this.body.applyAngularImpulse(-speed * TURN_RATE);
+			this.body.applyTorque(-TURN_RATE * turnScalar);
 		}
 		
 		if (right) {
 			
-			this.body.applyAngularImpulse(speed * TURN_RATE);
+			this.body.applyTorque(TURN_RATE * turnScalar);
 		}
 		
-		this.image.setRotation(this.body.getAngle() * RADTODEG);
+		this.drift(0.9f);
 		
-		System.out.println(this.body.getAngle());
+		this.rotation = (this.rotation + this.body.getAngle()) / 2f;
+		
+		this.image.setRotation(this.rotation * RADTODEG);
 	}
 	
 	@Override
@@ -134,7 +164,18 @@ public class Ambulance extends BasicComponentRenderable {
 		
 		graphics.drawImage(
 				this.image, 
-				this.body.getWorldCenter().x - this.image.getWidth() / 2f, 
-				this.body.getWorldCenter().y - this.image.getHeight() / 2f);
+				this.getX() - this.image.getWidth() / 2f, 
+				this.getY() - this.image.getHeight() / 2f);
+	}
+	
+	private void drift(final float amount) {
+		
+		final Vec2 forward = this.body.getWorldVector(new Vec2(0, 1));
+		final Vec2 right = this.body.getWorldVector(new Vec2(1, 0));
+		
+	    final Vec2 forwardVelocity = forward.mulLocal(Vec2.dot(this.body.getLinearVelocity(), forward));
+	    final Vec2 rightVelocity = right.mulLocal(Vec2.dot(this.body.getLinearVelocity(), right));
+	    
+	    this.body.setLinearVelocity(forwardVelocity.add(rightVelocity.mulLocal(amount)));
 	}
 }
