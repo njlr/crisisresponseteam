@@ -1,10 +1,13 @@
 package crisisresponseteam.simulation;
 
+import java.awt.Point;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.tiled.TileSet;
 import org.newdawn.slick.tiled.TiledMap;
 
 import com.google.common.eventbus.Subscribe;
@@ -13,7 +16,7 @@ import crisisresponseteam.simulation.events.AmbulancePositionUpdatedEvent;
 
 import nlib.components.BasicComponentRenderable;
 
-public strictfp final class MapDisplay extends BasicComponentRenderable {
+public strictfp final class NavigatorMap extends BasicComponentRenderable {
 	
 	private final String ref;
 	
@@ -22,7 +25,33 @@ public strictfp final class MapDisplay extends BasicComponentRenderable {
 	private Vector2f ambulancePosition;
 	private CrisisSite currentCrisisSite;
 	
-	public MapDisplay(final long id, final String ref) {
+	@Override
+	public float getDepth() {
+		
+		return Constants.DEPTH_MAP;
+	}
+	
+	public float getWidth() {
+		
+		return this.map.getWidth() * this.map.getTileWidth();
+	}
+	
+	public float getHeight() {
+		
+		return this.map.getHeight() * this.map.getTileHeight();
+	}
+	
+	public int getTileWidth() {
+		
+		return this.map.getTileWidth();
+	}
+	
+	public int getTileHeight() {
+		
+		return this.map.getTileHeight();
+	}
+	
+	public NavigatorMap(final long id, final String ref) {
 		
 		super(id);
 		
@@ -52,8 +81,6 @@ public strictfp final class MapDisplay extends BasicComponentRenderable {
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
 		
 		super.render(gameContainer, graphics);
-		
-		graphics.scale(0.5f, 0.5f);
 		
 		this.map.render(0, 0);
 		
