@@ -8,11 +8,14 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-import crisisresponseteam.simulation.MapDisplay;
+import crisisresponseteam.simulation.NavigatorMap;
+import crisisresponseteam.simulation.NavigatorView;
 
 public strictfp final class NavigatorGame extends BasicGame {
 	
 	private final ComponentManager<Component> componentManager;
+	
+	private final NavigatorView navigatorView;
 	
 	public NavigatorGame() {
 		
@@ -20,7 +23,13 @@ public strictfp final class NavigatorGame extends BasicGame {
 		
 		this.componentManager = new ComponentManager<Component>();
 		
-		this.componentManager.addComponent(new MapDisplay(this.componentManager.takeId(), "assets/maps/City1.tmx"));
+		final NavigatorMap navigatorMap = new NavigatorMap(this.componentManager.takeId(), "assets/maps/City1.tmx");
+		
+		this.componentManager.addComponent(navigatorMap);
+		
+		this.navigatorView = new NavigatorView(this.componentManager.takeId(), navigatorMap);
+		
+		this.componentManager.addComponent(this.navigatorView);
 	}
 	
 	@Override
@@ -38,6 +47,10 @@ public strictfp final class NavigatorGame extends BasicGame {
 	@Override
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
 		
+		graphics.translate(-this.navigatorView.getX(), -this.navigatorView.getY());
+		
 		this.componentManager.render(gameContainer, graphics);
+		
+		graphics.translate(0f, 0f);
 	}
 }
