@@ -7,6 +7,8 @@ public class Constants {
 		super();
 	}
 	
+	public static final float DEPTH_VIEW = -6f;
+	public static final float DEPTH_TOP = -5f;
 	public static final float DEPTH_AMBULANCE = -4f;
 	public static final float DEPTH_PEDESTRIAN = -3f;
 	public static final float DEPTH_SITE = -2f;

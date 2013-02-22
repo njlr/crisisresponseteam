@@ -1,6 +1,8 @@
 package crisisresponseteam.simulation.events;
 
-public strictfp final class AmbulancePositionUpdatedEvent {
+public strictfp final class AmbulancePositionUpdatedEvent extends Event {
+	
+	private static final long serialVersionUID = 3239601997276981432L;
 	
 	private final float x;
 	private final float y;
@@ -21,5 +23,11 @@ public strictfp final class AmbulancePositionUpdatedEvent {
 		
 		this.x = x;
 		this.y = y;
+	}
+	
+	@Override
+	public String toString() {
+		
+		return "AmbulancePositionUpdateEvent[x: " + this.x + ", y: " + this.y + "]";
 	}
 }

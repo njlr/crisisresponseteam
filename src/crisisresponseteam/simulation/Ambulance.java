@@ -16,7 +16,12 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.gamedevsoc.net.sessions.Session;
+import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
+
 import crisisresponseteam.GroundTeamGame;
+import crisisresponseteam.simulation.events.AmbulancePositionUpdatedEvent;
 
 public class Ambulance extends BasicComponentRenderable {
 	
@@ -35,6 +40,8 @@ public class Ambulance extends BasicComponentRenderable {
 	
 	private Image image;
 	
+	private final Session<SessionConfig, PlayerInfo> session;
+	
 	public float getX() {
 		
 		return this.body.getPosition().x / GroundTeamGame.PHYSICS_SCALAR;
@@ -45,9 +52,11 @@ public class Ambulance extends BasicComponentRenderable {
 		return this.body.getPosition().y / GroundTeamGame.PHYSICS_SCALAR; 
 	}
 	
-	public Ambulance(final long id, final World world, final float x, final float y) {
+	public Ambulance(final long id, final World world, final float x, final float y, final Session<SessionConfig, PlayerInfo> session) {
 		
 		super(id);
+		
+		this.session = session;
 		
 		final BodyDef bodyDef = new BodyDef();
 		
@@ -76,6 +85,7 @@ public class Ambulance extends BasicComponentRenderable {
 		fixtureDef.shape = circle;
 		fixtureDef.restitution = 0.1f;
 		fixtureDef.friction = 0f;
+		fixtureDef.userData = this;
 	    
 	    this.body.createFixture(fixtureDef);
 	    
@@ -155,6 +165,8 @@ public class Ambulance extends BasicComponentRenderable {
 		this.rotation = (this.rotation + this.body.getAngle()) / 2f;
 		
 		this.image.setRotation(this.rotation * RADTODEG);
+		
+		this.session.submit(new AmbulancePositionUpdatedEvent(this.getX(), this.getY()));
 	}
 	
 	@Override

@@ -1,17 +1,20 @@
 package crisisresponseteam.simulation;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import nlib.components.BasicComponent;
+import nlib.components.BasicComponentRenderable;
 
-public strictfp final class View extends BasicComponent {
+public strictfp final class View extends BasicComponentRenderable {
 	
 	private static final int WIDTH = 640;
 	private static final int HEIGHT = 480;
 	
 	private final Map map;
 	private final Ambulance ambulance;
+	private final CrisisManager crisisManager;
 	
 	private float x;
 	private float y;
@@ -26,12 +29,20 @@ public strictfp final class View extends BasicComponent {
 		return this.y;
 	}
 	
-	public View(final long id, final Map map, final Ambulance ambulance) {
+	@Override
+	public float getDepth() {
+		
+		return Constants.DEPTH_VIEW;
+	}
+	
+	public View(final long id, final Map map, final Ambulance ambulance, final CrisisManager crisisManager) {
 		
 		super(id);
 		
 		this.map = map;
 		this.ambulance = ambulance;
+		
+		this.crisisManager = crisisManager;
 	}
 	
 	@Override
@@ -48,6 +59,14 @@ public strictfp final class View extends BasicComponent {
 		super.update(gameContainer, delta);
 		
 		this.trackAmbulance();
+	}
+	
+	@Override
+	public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
+		
+		super.render(gameContainer, graphics);
+		
+		graphics.drawString("TIME LEFT: " + this.crisisManager.getTimeLeft(), this.getX() + 4, this.getY() + 4);
 	}
 	
 	private void trackAmbulance() {
