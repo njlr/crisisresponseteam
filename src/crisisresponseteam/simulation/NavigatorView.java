@@ -1,11 +1,14 @@
 package crisisresponseteam.simulation;
 
+import java.util.Random;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import nlib.components.BasicComponentRenderable;
@@ -25,6 +28,7 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 	
 	private Image ambulanceImage;
 	private Image crisisImage;
+	private Image scan;
 	
 	@Override
 	public float getDepth() {
@@ -62,6 +66,8 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 		
 		this.ambulanceImage.setCenterOfRotation(this.ambulanceImage.getWidth() / 2, this.ambulanceImage.getHeight() / 2);
 		this.crisisImage.setCenterOfRotation(this.crisisImage.getWidth() / 2, this.crisisImage.getHeight() / 2);
+		
+		this.scan = new Image("assets/gfx/Scanlines.png");
 		
 		this.clamp(); 
 	}
@@ -103,10 +109,20 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 		this.clamp();
 	}
 	
+	private final Random random = new Random();
+	
 	@Override
 	public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
 		
 		super.render(gameContainer, graphics);
+		
+		for (int x = 0; x < WIDTH; x += this.scan.getWidth()) {
+			
+			for (int y = -this.random.nextInt(32); y < HEIGHT; y+= this.scan.getHeight()) {
+				
+				this.scan.draw(x + this.getX(), y + this.getY());
+			}
+		}
 		
 		graphics.setColor(Color.blue);
 		

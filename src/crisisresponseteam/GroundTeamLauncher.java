@@ -44,7 +44,7 @@ public strictfp final class GroundTeamLauncher {
 		
 		final AppGameContainer container = new AppGameContainer(scalableGame);
 		
-		//container.setDisplayMode(960, 720, false);
+		container.setDisplayMode(1280, 1024, true);
 		container.setVSync(true);
 		container.setTargetFrameRate(30);
 		container.setShowFPS(false);

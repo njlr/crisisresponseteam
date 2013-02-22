@@ -25,7 +25,6 @@ import nlib.components.ComponentManager;
 public strictfp final class Map extends BasicComponentRenderable {
 	
 	private final ComponentManager<Component> componentManager;
-	private final GoreManager goreManager;
 	
 	private final World world;
 	private final String ref;
@@ -63,13 +62,12 @@ public strictfp final class Map extends BasicComponentRenderable {
 		return this.map.getTileHeight();
 	}
 	
-	public Map(final long id, final World world, final ComponentManager<Component> componentManager, final GoreManager goreManager, final String ref) {
+	public Map(final long id, final World world, final ComponentManager<Component> componentManager, final String ref) {
 		
 		super(id);
 		
 		this.world = world;
 		this.componentManager = componentManager;
-		this.goreManager = goreManager;
 		
 		this.ref = ref;
 	}

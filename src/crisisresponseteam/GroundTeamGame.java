@@ -10,9 +10,11 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
 
 import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
 import uk.ac.ed.gamedevsoc.net.sessions.Session;
@@ -50,58 +52,15 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		// Components
 		this.componentManager = new ComponentManager<Component>();
 		
-		// Gore Manager
-		final GoreManager goreManager = new GoreManager(this.componentManager.takeId());
 		
-		this.componentManager.addComponent(goreManager);
-		
-		this.world.setContactListener(
-				new ContactListener() {
-					
-					@Override
-					public void preSolve(Contact contact, Manifold oldManifold) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void postSolve(Contact contact, ContactImpulse impulse) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void endContact(Contact contact) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void beginContact(Contact contact) {
-						
-						boolean ap = contact.getFixtureA().getUserData() instanceof Pedestrian;
-						boolean bp = contact.getFixtureB().getUserData() instanceof Pedestrian;
-						
-						boolean aa = contact.getFixtureA().getUserData() instanceof Ambulance;
-						boolean ba = contact.getFixtureB().getUserData() instanceof Ambulance;
-						
-						if ((ap && ba) || (bp && aa)) {
-							
-							int x = (int) (contact.getFixtureA().getAABB().getCenter().x / PHYSICS_SCALAR);
-							int y = (int) (contact.getFixtureA().getAABB().getCenter().y / PHYSICS_SCALAR);
-							
-							goreManager.emit(x, y);
-						}
-					}
-				});
 		
 		// Map
-		final Map map = new Map(this.componentManager.takeId(), world, this.componentManager, goreManager, "assets/maps/City1.tmx");
+		final Map map = new Map(this.componentManager.takeId(), world, this.componentManager, "assets/maps/City1.tmx");
 		
 		this.componentManager.addComponent(map);
 		
 		// Ambulance
-		final Ambulance ambulance = new Ambulance(this.componentManager.takeId(), this.world, 256f, 128f, this.session);
+		final Ambulance ambulance = new Ambulance(this.componentManager.takeId(), this.world, 432f, 96f, this.session);
 		
 		this.componentManager.addComponent(ambulance);
 		
@@ -122,6 +81,7 @@ public strictfp final class GroundTeamGame extends BasicGame {
 	public void init(final GameContainer gameContainer) throws SlickException {
 		this.session.submit(new CommandLaunch());
 		this.componentManager.init(gameContainer);
+		
 	}
 
 	@Override
@@ -131,9 +91,9 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		
 		this.world.step(0.1f, 10, 10);
 	}
-	
 	@Override
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
+
 		
 		graphics.setAntiAlias(false);
 		

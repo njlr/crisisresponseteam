@@ -70,12 +70,16 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 		this.timeLeft = TIME_START;
 		
 		this.image = new Image("assets/gfx/CrisisZone.png");
+		
+		this.image.setCenterOfRotation(this.image.getWidth() / 2, this.image.getHeight()  /2);
 	}
 	
 	@Override
 	public void update(final GameContainer gameContainer, final int delta) throws SlickException {
 		
 		super.update(gameContainer, delta);
+		
+		this.image.setRotation(this.image.getRotation() + 0.1f);
 		
 		if (this.timeLeft > 0) {
 			
@@ -114,7 +118,10 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 				}
 			}
 		}
+		
+		
 	}
+	
 	
 	@Override
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
@@ -122,6 +129,8 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 		super.render(gameContainer, graphics);
 		
 		if (this.currentCrisisSite != null) {
+			
+			
 			
 			graphics.drawImage(
 					this.image, 

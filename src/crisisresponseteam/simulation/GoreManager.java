@@ -48,6 +48,9 @@ public strictfp final class GoreManager extends BasicComponentRenderable {
 		emitter.setPosition(x, y);
 		emitter.setEnabled(true);
 		
+		
 		this.particleSystem.addEmitter(emitter);
+		
+		this.particleSystem.removeEmitter(emitter);
 	}
 }
