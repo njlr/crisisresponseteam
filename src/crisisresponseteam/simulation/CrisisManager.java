@@ -9,18 +9,26 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
+import crisisresponseteam.simulation.events.CrisisSiteSetEvent;
+import crisisresponseteam.simulation.events.TimeLeftEvent;
+
+import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.gamedevsoc.net.sessions.Session;
+import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
+
 import nlib.components.BasicComponentRenderable;
 import nlib.components.Component;
 import nlib.components.ComponentManager;
 
 public strictfp final class CrisisManager extends BasicComponentRenderable {
 	
-	private static final int TIME_START = 90 * 1000;
+	public static final int TIME_START = 90 * 1000;
 	private static final int TIME_ADDED_PER_CRISIS = 15 * 1000;
 	
 	private static final float CRISIS_SITE_RADIUS = 32f;
 	
 	private final ComponentManager<Component> componentManager;
+	private final Session<SessionConfig, PlayerInfo> session;
 	
 	private final Random random;
 	
@@ -35,11 +43,18 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 		return this.currentCrisisSite;
 	}
 	
-	public CrisisManager(final long id, final ComponentManager<Component> componentManager) {
+	public int getTimeLeft() {
+		
+		return timeLeft / 1000;
+	}
+	
+	public CrisisManager(final long id, final ComponentManager<Component> componentManager, final Session<SessionConfig, PlayerInfo> session) {
 		
 		super(id);
 		
 		this.componentManager = componentManager;
+		
+		this.session = session;
 		
 		this.random = new Random();
 		
@@ -66,6 +81,9 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 			if (this.currentCrisisSite == null) {
 				
 				this.currentCrisisSite = getNextCrisisSite();
+				
+				this.session.submit(new CrisisSiteSetEvent(this.currentCrisisSite));
+				this.session.submit(new TimeLeftEvent(this.timeLeft));
 			}
 			
 			this.timeLeft -= delta;
@@ -88,7 +106,8 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 							
 							this.timeLeft += TIME_ADDED_PER_CRISIS;
 							
-							// TODO: Notify navigator
+							this.session.submit(new CrisisSiteSetEvent(this.currentCrisisSite));
+							this.session.submit(new TimeLeftEvent(this.timeLeft));
 						}
 					}
 				}

@@ -27,7 +27,12 @@ public strictfp final class Map extends BasicComponentRenderable {
 	private final World world;
 	private final String ref;
 	
+	
 	private TiledMap map;
+	
+	public TiledMap getMap() {
+		return map;
+	}
 	
 	@Override
 	public float getDepth() {
@@ -152,7 +157,7 @@ public strictfp final class Map extends BasicComponentRenderable {
 					final PedestrianSpawn pedestrianSpawn = new PedestrianSpawn(
 							this.componentManager.takeId(), 
 							this.componentManager, 
-							this.goreManager, 
+							world, 
 							new Vector2f(x, y), 
 							interval);
 					
@@ -191,6 +196,12 @@ public strictfp final class Map extends BasicComponentRenderable {
 		
 		super.render(gameContainer, graphics);
 		
-		this.map.render(0, 0);
+		for (int l = 0; l < this.map.getLayerCount(); l++) {
+			
+			if (!Boolean.parseBoolean(this.map.getLayerProperty(l, "Top", "False"))) {
+				
+				this.map.render(0, 0, l);
+			}
+		}
 	}
 }

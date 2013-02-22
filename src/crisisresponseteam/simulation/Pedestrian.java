@@ -2,33 +2,33 @@ package crisisresponseteam.simulation;
 
 import java.util.Random;
 
+import nlib.components.BasicComponentRenderable;
+import nlib.components.ComponentRenderable;
+import nlib.physics.steering.Steering;
+
+import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
-import uk.ac.ed.gamedevsoc.collisions.Collider;
+import crisisresponseteam.GroundTeamGame;
 
-import nlib.components.ComponentRenderable;
-import nlib.physics.steering.BasicVehicle;
-import nlib.physics.steering.Steering;
-
-public strictfp final class Pedestrian extends BasicVehicle implements ComponentRenderable, Collider {
+public strictfp final class Pedestrian extends BasicComponentRenderable implements ComponentRenderable {
 	
-	private final static float MASS = 1f;
-	private final static float DRAG_COEFFICIENT = 0.01f;
-	private final static float MAX_SPEED = 0.5f;
-	private final static float MAX_FORCE = 0.1f;
-	private final static float TURN_SPEED = 4f;
-	
-	private final static float RADIUS = 4f;
+	private static final float RADTODEG = 57.295779513082320876f;
 	
 	private static final float WANDER_CIRCLE_RADIUS = 256f;
 	private static final float WANDER_CIRCLE_DISTANCE = 16f;
 	private static final float WANDER_CIRCLE_CHANGE = 5f;
-	
-	private final GoreManager goreManager;
 	
 	private final Random random;
 	
@@ -38,21 +38,58 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 	
 	private boolean isAlive;
 	
+	private final Body body;
+	
 	@Override
 	public float getDepth() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return Constants.DEPTH_PEDESTRIAN;
 	}
 	
-	public Pedestrian(final long id, final Vector2f initialPosition, final GoreManager goreManager) {
+	public float getX() {
 		
-		super(id, initialPosition, MASS, DRAG_COEFFICIENT, MAX_SPEED, MAX_FORCE, TURN_SPEED);
+		return this.body.getPosition().x / GroundTeamGame.PHYSICS_SCALAR;
+	}
+	
+	public float getY() {
 		
-		this.goreManager = goreManager;
+		return this.body.getPosition().y / GroundTeamGame.PHYSICS_SCALAR; 
+	}
+	
+	public Pedestrian(final long id, final World world, final float x, final float y) {
+		
+		super(id);
 		
 		this.random = new Random();
 		
 		this.isAlive = false;
+		
+		final BodyDef bodyDef = new BodyDef();
+		
+		bodyDef.type = BodyType.DYNAMIC;
+		bodyDef.position = new Vec2(
+				x * GroundTeamGame.PHYSICS_SCALAR, 
+				y * GroundTeamGame.PHYSICS_SCALAR);
+		
+		bodyDef.linearDamping = 0.1f;
+		bodyDef.angularDamping = 1f;
+		
+		this.body = world.createBody(bodyDef);
+		
+		final CircleShape circle = new CircleShape();
+		
+		circle.m_p.set(0f, 0f);
+		circle.m_radius = 4f * GroundTeamGame.PHYSICS_SCALAR;
+		
+		final FixtureDef fixtureDef = new FixtureDef();
+		
+		fixtureDef.density = 10f;
+		fixtureDef.shape = circle;
+		fixtureDef.restitution = 0.5f;
+		fixtureDef.friction = 0f;
+		fixtureDef.userData = this;
+	    
+	    this.body.createFixture(fixtureDef);
 	}
 	
 	@Override
@@ -60,7 +97,7 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		
 		super.init(gameContainer);
 		
-		this.image = new Image("assets/gfx/Ped1.png");
+		this.image = new Image("assets/gfx/Ped1.png"); 
 		
 		this.image.setCenterOfRotation(this.image.getWidth() / 2f, this.image.getHeight() / 2f);
 		
@@ -74,29 +111,17 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		
 		super.update(gameContainer, delta);
 		
-		this.image.setRotation(this.getRotation());
+		Vector2f v = this.wander().scale(0.001f);
 		
-		this.addSteering(this.wander());
+		this.body.applyForce(new Vec2(v.getX(), v.getY()), this.body.getPosition());
 		
-		this.turn(Steering.turn(this.getRotation(), (float) this.getVelocity().getTheta()));
+		//this.image.setRotation(this.body);TODO
 	}
 	
 	@Override
 	public void render(final GameContainer gameContainer, final Graphics graphics) throws SlickException {
 		
-		graphics.drawImage(this.image, this.getPosition().getX(), this.getPosition().getY());
-	}
-
-	@Override
-	public float getRadius() {
-		
-		return RADIUS;
-	}
-
-	@Override
-	public boolean canCollide(Collider other) {
-		
-		return true;
+		graphics.drawImage(this.image, this.getX() - image.getWidth() / 2f, this.getY() - image.getHeight() / 2f);
 	}
 	
 	public void runOver() {
@@ -109,34 +134,24 @@ public strictfp final class Pedestrian extends BasicVehicle implements Component
 		this.triggerDestroy();
 		
 		this.isAlive = false;
-		
-		this.goreManager.emit(this.getPosition());
 	}
 	
 	private Vector2f wander() {
 		
-		final Vector2f circlePosition = this.getVelocity();
+		final Vector2f circlePosition = new Vector2f(
+				this.body.getLinearVelocity().x, 
+				this.body.getLinearVelocity().y);
 		
 		circlePosition.normalise();
 		circlePosition.scale(WANDER_CIRCLE_DISTANCE);
-		circlePosition.add(this.getPosition());
+		circlePosition.add(new Vector2f(this.getX(), this.getY()));
 		
 		this.wander += this.random.nextFloat() * WANDER_CIRCLE_CHANGE * 2f - WANDER_CIRCLE_CHANGE;
 		
 		final Vector2f target = circlePosition.add(new Vector2f(this.wander).scale(WANDER_CIRCLE_RADIUS));
 		
-		return Steering.seek(this.getPosition(), this.getVelocity(), target);
-	}
-
-	@Override
-	public float getX() {
-		
-		return this.getPosition().getX();
-	}
-
-	@Override
-	public float getY() {
-		
-		return this.getPosition().getY();
+		return Steering.seek(new Vector2f(this.getX(), this.getY()), new Vector2f(
+				this.body.getLinearVelocity().x, 
+				this.body.getLinearVelocity().y), target);
 	}
 }

@@ -43,9 +43,9 @@ public strictfp final class GoreManager extends BasicComponentRenderable {
 		this.particleSystem.render(0f, 0f);
 	}
 	
-	public void emit(final Vector2f position) {
+	public void emit(final int x, final int y) {
 		
-		ParticleEmitter emitter = new FireEmitter((int) position.getX(), (int) position.getY());
+		ParticleEmitter emitter = new FireEmitter(x, y);
 		
 		this.particleSystem.addEmitter(emitter);
 	}

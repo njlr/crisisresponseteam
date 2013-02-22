@@ -1,10 +1,14 @@
 package crisisresponseteam.simulation;
 
+import java.io.Serializable;
+
 import nlib.components.BasicComponent;
 
 import org.newdawn.slick.geom.Vector2f;
 
-public strictfp final class CrisisSite extends BasicComponent {
+public strictfp final class CrisisSite extends BasicComponent implements Serializable {
+	
+	private static final long serialVersionUID = 4566243679293369431L;
 	
 	private final Vector2f position;
 	private final String name;

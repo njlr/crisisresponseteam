@@ -1,20 +1,18 @@
 package crisisresponseteam.simulation;
 
-import java.awt.Point;
+import nlib.components.BasicComponentRenderable;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.tiled.TileSet;
 import org.newdawn.slick.tiled.TiledMap;
 
 import com.google.common.eventbus.Subscribe;
 
 import crisisresponseteam.simulation.events.AmbulancePositionUpdatedEvent;
-
-import nlib.components.BasicComponentRenderable;
+import crisisresponseteam.simulation.events.CrisisSiteSetEvent;
+import crisisresponseteam.simulation.events.TimeLeftEvent;
 
 public strictfp final class NavigatorMap extends BasicComponentRenderable {
 	
@@ -24,6 +22,12 @@ public strictfp final class NavigatorMap extends BasicComponentRenderable {
 	
 	private Vector2f ambulancePosition;
 	private CrisisSite currentCrisisSite;
+	
+	private int timeLeft;
+	
+	public int getTimeLeft() {
+		return timeLeft / 1000;
+	}
 	
 	@Override
 	public float getDepth() {
@@ -51,6 +55,16 @@ public strictfp final class NavigatorMap extends BasicComponentRenderable {
 		return this.map.getTileHeight();
 	}
 	
+	public Vector2f getAmbulancePosition() {
+		
+		return this.ambulancePosition;
+	}
+	
+	public CrisisSite getCurrentCrisisSite() {
+		
+		return this.currentCrisisSite;
+	}
+	
 	public NavigatorMap(final long id, final String ref) {
 		
 		super(id);
@@ -59,6 +73,8 @@ public strictfp final class NavigatorMap extends BasicComponentRenderable {
 		
 		this.ambulancePosition = new Vector2f(0f, 0f);
 		this.currentCrisisSite = null;
+		
+		this.timeLeft = 0;
 	}
 	
 	@Override
@@ -67,6 +83,8 @@ public strictfp final class NavigatorMap extends BasicComponentRenderable {
 		super.init(gameContainer);
 		
 		this.map = new TiledMap(ref);
+		
+		this.timeLeft = CrisisManager.TIME_START;
 	}
 	
 	@Override
@@ -74,7 +92,15 @@ public strictfp final class NavigatorMap extends BasicComponentRenderable {
 		
 		super.update(gameContainer, delta);
 		
-		
+		if (this.timeLeft > 0) { 
+			
+			this.timeLeft -= delta;
+			
+			if (this.timeLeft < 0) {
+				
+				this.timeLeft = 0;
+			}
+		}
 	}
 	
 	@Override
@@ -83,32 +109,23 @@ public strictfp final class NavigatorMap extends BasicComponentRenderable {
 		super.render(gameContainer, graphics);
 		
 		this.map.render(0, 0);
-		
-		graphics.setColor(Color.blue);
-		
-		graphics.fillOval(
-				this.ambulancePosition.getX() - 4f, 
-				this.ambulancePosition.getY() - 4f, 
-				16f, 
-				16f);
-		
-		if (this.currentCrisisSite != null) {
-			
-			graphics.setColor(Color.red);
-			
-			graphics.fillOval(
-					this.currentCrisisSite.getPosition().getX() - 4f, 
-					this.currentCrisisSite.getPosition().getY() - 4f, 
-					16f, 
-					16f);
-		}
-		
-		graphics.scale(0f, 0f);
 	}
 	
 	@Subscribe
-	public void handleAmbulancePositionUpdatedEvent(AmbulancePositionUpdatedEvent e) {
+	public void handleAmbulancePositionUpdatedEvent(final AmbulancePositionUpdatedEvent e) {
 		
 		this.ambulancePosition.set(e.getX(), e.getY());
+	}
+	
+	@Subscribe
+	public void handleCrisisSetEvent(final CrisisSiteSetEvent e) {
+		
+		this.currentCrisisSite = e.getCrisisSite();
+	}
+	
+	@Subscribe
+	public void handleTimeLeftEvent(final TimeLeftEvent e) {
+		
+		this.timeLeft = e.getTimeLeft();
 	}
 }

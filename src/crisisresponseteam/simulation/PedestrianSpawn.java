@@ -1,5 +1,6 @@
 package crisisresponseteam.simulation;
 
+import org.jbox2d.dynamics.World;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
@@ -11,7 +12,7 @@ import nlib.components.ComponentManager;
 public strictfp final class PedestrianSpawn extends BasicComponent {
 	
 	private final ComponentManager<Component> componentManager;
-	private final GoreManager goreManager;
+	private final World world;
 	
 	private final Vector2f position;
 	
@@ -19,12 +20,12 @@ public strictfp final class PedestrianSpawn extends BasicComponent {
 	
 	private int timeTillSpawn;
 	
-	public PedestrianSpawn(final long id, final ComponentManager<Component> componentManager, final GoreManager goreManager, final Vector2f position, final int interval) {
+	public PedestrianSpawn(final long id, final ComponentManager<Component> componentManager, final World world, final Vector2f position, final int interval) {
 		
 		super(id);
 		
 		this.componentManager = componentManager;
-		this.goreManager = goreManager;
+		this.world = world;
 		
 		this.position = position;
 		
@@ -57,8 +58,9 @@ public strictfp final class PedestrianSpawn extends BasicComponent {
 		
 		final Pedestrian pedestrian = new Pedestrian(
 				this.componentManager.takeId(), 
-				this.position, 
-				this.goreManager);
+				this.world, 
+				this.position.getX(),
+				this.position.getY());
 		
 		this.componentManager.addComponent(pedestrian);
 	}
