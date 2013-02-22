@@ -7,9 +7,9 @@ import org.newdawn.slick.Game;
 import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 
-public strictfp final class GroundTeamLauncher {
+public strictfp final class NavigatorLauncher {
 	
-	private GroundTeamLauncher() {
+	private NavigatorLauncher() {
 		
 		super();
 	}
@@ -18,7 +18,7 @@ public strictfp final class GroundTeamLauncher {
 		
 		Utils.linkLwjgl();
 		
-		final Game game = new GroundTeamGame();
+		final Game game = new NavigatorGame();
 		
 		final ScalableGame scalableGame = new ScalableGame(game, 640, 480, true);
 		
