@@ -38,6 +38,11 @@ public strictfp final class PedestrianSpawn extends BasicComponent {
 		super.init(gameContainer);
 		
 		this.timeTillSpawn = 0;
+		
+		for (int i = 0; i < this.interval; i += 10000) {
+			
+			this.spawn();
+		}
 	}
 	
 	public void update(final GameContainer gameContainer, final int delta) throws SlickException {
@@ -50,7 +55,7 @@ public strictfp final class PedestrianSpawn extends BasicComponent {
 			
 			this.timeTillSpawn += this.interval;
 			
-			this.spawn();
+			//this.spawn();
 		}
 	}
 	

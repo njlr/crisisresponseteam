@@ -1,5 +1,8 @@
 package crisisresponseteam.simulation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -171,16 +174,21 @@ public strictfp final class Map extends BasicComponentRenderable {
 					final String name = this.map.getObjectProperty(g, o, "Name", "???");
 					
 					final CrisisSite crisisSite = new CrisisSite(
-							this.componentManager.takeId(), 
 							new Vector2f(x, y), 
 							name);
 					
-					this.componentManager.addComponent(crisisSite);
+					this.crisisSites.add(crisisSite);
 					
 					System.out.println(crisisSite.getName());
 				}
 			}
 		}
+	}
+	
+	private final List<CrisisSite> crisisSites = new ArrayList<CrisisSite>();
+	
+	public List<CrisisSite> getCrisisSites() {
+		return crisisSites;
 	}
 	
 	@Override

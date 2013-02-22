@@ -1,14 +1,12 @@
 package crisisresponseteam.simulation;
 
+import nlib.components.BasicComponentRenderable;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.particles.ParticleEmitter;
+import org.newdawn.slick.particles.ConfigurableEmitter;
 import org.newdawn.slick.particles.ParticleSystem;
-import org.newdawn.slick.particles.effects.FireEmitter;
-
-import nlib.components.BasicComponentRenderable;
 
 public strictfp final class GoreManager extends BasicComponentRenderable {
 	
@@ -45,7 +43,10 @@ public strictfp final class GoreManager extends BasicComponentRenderable {
 	
 	public void emit(final int x, final int y) {
 		
-		ParticleEmitter emitter = new FireEmitter(x, y);
+		final ConfigurableEmitter emitter = new ConfigurableEmitter("");
+		
+		emitter.setPosition(x, y);
+		emitter.setEnabled(true);
 		
 		this.particleSystem.addEmitter(emitter);
 	}

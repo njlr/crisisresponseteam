@@ -66,7 +66,12 @@ public strictfp final class View extends BasicComponentRenderable {
 		
 		super.render(gameContainer, graphics);
 		
+		if (this.crisisManager.getTimeLeft() > 0) {
 		graphics.drawString("TIME LEFT: " + this.crisisManager.getTimeLeft(), this.getX() + 4, this.getY() + 4);
+		}
+		else {
+			graphics.drawString("GAME OVER", this.getX() + 4, this.getY() + 4);	
+		}
 	}
 	
 	private void trackAmbulance() {

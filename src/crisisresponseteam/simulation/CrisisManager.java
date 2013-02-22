@@ -28,6 +28,7 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 	private static final float CRISIS_SITE_RADIUS = 32f;
 	
 	private final ComponentManager<Component> componentManager;
+	private final Map map;
 	private final Session<SessionConfig, PlayerInfo> session;
 	
 	private final Random random;
@@ -48,12 +49,12 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 		return timeLeft / 1000;
 	}
 	
-	public CrisisManager(final long id, final ComponentManager<Component> componentManager, final Session<SessionConfig, PlayerInfo> session) {
+	public CrisisManager(final long id, final ComponentManager<Component> componentManager, final Map map, final Session<SessionConfig, PlayerInfo> session) {
 		
 		super(id);
 		
 		this.componentManager = componentManager;
-		
+		this.map = map;
 		this.session = session;
 		
 		this.random = new Random();
@@ -141,7 +142,7 @@ public strictfp final class CrisisManager extends BasicComponentRenderable {
 	
 	private CrisisSite getNextCrisisSite() {
 		
-		final List<CrisisSite> list = this.componentManager.getComponents(CrisisSite.class);
+		final List<CrisisSite> list = this.map.getCrisisSites();
 		
 		if (list.isEmpty()) {
 			

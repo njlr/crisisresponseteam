@@ -101,14 +101,14 @@ public strictfp final class GroundTeamGame extends BasicGame {
 		this.componentManager.addComponent(map);
 		
 		// Ambulance
-		final Ambulance ambulance = new Ambulance(this.componentManager.takeId(), this.world, 128f, 128f, this.session);
+		final Ambulance ambulance = new Ambulance(this.componentManager.takeId(), this.world, 256f, 128f, this.session);
 		
 		this.componentManager.addComponent(ambulance);
 		
 		this.componentManager.addComponent(new MapTop(this.componentManager.takeId(), map));
 		
 		// Crisis Manager
-		final CrisisManager crisisManager = new CrisisManager(this.componentManager.takeId(), this.componentManager, this.session);
+		final CrisisManager crisisManager = new CrisisManager(this.componentManager.takeId(), this.componentManager, map, this.session);
 		
 		this.componentManager.addComponent(crisisManager);
 		

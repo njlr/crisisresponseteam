@@ -3,6 +3,7 @@ package crisisresponseteam.simulation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
@@ -21,6 +22,9 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 	
 	private final Vector2f position;
 	private final Vector2f velocity;
+	
+	private Image ambulanceImage;
+	private Image crisisImage;
 	
 	@Override
 	public float getDepth() {
@@ -52,6 +56,12 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 	public void init(final GameContainer gameContainer) throws SlickException {
 		
 		super.init(gameContainer);
+		
+		this.ambulanceImage = new Image("assets/gfx/AmbulanceArrow.png");
+		this.crisisImage = new Image("assets/gfx/CrisisArrow.png");
+		
+		this.ambulanceImage.setCenterOfRotation(this.ambulanceImage.getWidth() / 2, this.ambulanceImage.getHeight() / 2);
+		this.crisisImage.setCenterOfRotation(this.crisisImage.getWidth() / 2, this.crisisImage.getHeight() / 2);
 		
 		this.clamp(); 
 	}
@@ -111,27 +121,33 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 		
 		if (ax < this.getX() || ay < this.getY() || ax > this.getX() + WIDTH || ay > this.getY() + HEIGHT)  {
 			
-			if (ax < this.getX()) {
+			if (ax < this.getX() + 32) {
 				
-				ax = this.getX();
+				ax = this.getX() + 32;
 			}
 			
-			if (ay < this.getY()) {
+			if (ay < this.getY() + 32) {
 				
-				ay = this.getY();
+				ay = this.getY() + 32;
 			}
 			
-			if (ax > this.getX() + WIDTH) {
+			if (ax > this.getX() + WIDTH - 32) {
 				
-				ax = this.getX() + WIDTH;
+				ax = this.getX() + WIDTH - 32;
 			}
 			
-			if (ay > this.getY() + HEIGHT) {
+			if (ay > this.getY() + HEIGHT  - 32) {
 				
-				ay = this.getY() + HEIGHT;
+				ay = this.getY() + HEIGHT - 32;
 			}
 			
-			graphics.fillRect(ax - 8f, ay - 8f, 16f, 16f);
+			this.ambulanceImage.setRotation(
+					(float) new Vector2f(ax, ay).sub(
+							new Vector2f(this.getX() + WIDTH / 2, this.getY() + HEIGHT / 2)).getTheta());
+			
+			this.ambulanceImage.draw(
+					ax - this.ambulanceImage.getCenterOfRotationX(), 
+					ay - this.ambulanceImage.getCenterOfRotationY());
 		}
 		
 		if (this.map.getCurrentCrisisSite() != null) {
@@ -149,32 +165,44 @@ public strictfp final class NavigatorView extends BasicComponentRenderable {
 			
 			if (ax < this.getX() || ay < this.getY() || ax > this.getX() + WIDTH || ay > this.getY() + HEIGHT)  {
 				
-				if (ax < this.getX()) {
+				if (ax < this.getX() + 32) {
 					
-					ax = this.getX();
+					ax = this.getX() + 32;
 				}
 				
-				if (ay < this.getY()) {
+				if (ay < this.getY() + 32) {
 					
-					ay = this.getY();
+					ay = this.getY() + 32;
 				}
 				
-				if (ax > this.getX() + WIDTH) {
+				if (ax > this.getX() + WIDTH - 32) {
 					
-					ax = this.getX() + WIDTH;
+					ax = this.getX() + WIDTH - 32;
 				}
 				
-				if (ay > this.getY() + HEIGHT) {
+				if (ay > this.getY() + HEIGHT  - 32) {
 					
-					ay = this.getY() + HEIGHT;
+					ay = this.getY() + HEIGHT - 32;
 				}
 				
-				graphics.fillRect(ax - 8f, ay - 8f, 16f, 16f);
+				this.crisisImage.setRotation(
+						(float) new Vector2f(ax, ay).sub(
+								new Vector2f(this.getX() + WIDTH / 2, this.getY() + HEIGHT / 2)).getTheta());
+				
+				this.crisisImage.draw(
+						ax - this.crisisImage.getCenterOfRotationX(), 
+						ay - this.crisisImage.getCenterOfRotationY());
 			}
 		}
 		
+		graphics.setColor(Color.white);
 		
+		if (this.map.getTimeLeft() > 0) {
 		graphics.drawString("TIME LEFT: " + this.map.getTimeLeft(), this.getX() + 4, this.getY() + 4);
+		}
+		else {
+			graphics.drawString("GAME OVER", this.getX() + 4, this.getY() + 4);	
+		}
 	}
 	
 	private void clamp() {
