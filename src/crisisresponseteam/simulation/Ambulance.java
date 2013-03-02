@@ -29,7 +29,7 @@ public class Ambulance extends BasicComponentRenderable {
 	private static final float RADTODEG = 57.295779513082320876f;
 	
 	private static final float FORCE = 100f;
-	private static final float FORCE_REVERSE = 10f;
+	private static final float FORCE_REVERSE = 60f;
 	
 	private static final float TURN_RATE = 500f;
 	private static final float TURN_SPEED_LIMITER = 5f;
