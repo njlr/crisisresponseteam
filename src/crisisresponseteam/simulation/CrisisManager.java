@@ -12,9 +12,9 @@ import org.newdawn.slick.geom.Vector2f;
 import crisisresponseteam.simulation.events.CrisisSiteSetEvent;
 import crisisresponseteam.simulation.events.TimeLeftEvent;
 
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
-import uk.ac.ed.gamedevsoc.net.sessions.Session;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.Session;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionConfig;
 
 import nlib.components.BasicComponentRenderable;
 import nlib.components.Component;

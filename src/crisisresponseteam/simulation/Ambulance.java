@@ -16,9 +16,9 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
-import uk.ac.ed.gamedevsoc.net.sessions.Session;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.Session;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionConfig;
 
 import crisisresponseteam.GroundTeamGame;
 import crisisresponseteam.simulation.events.AmbulancePositionUpdatedEvent;

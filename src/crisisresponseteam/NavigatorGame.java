@@ -4,9 +4,9 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
-import uk.ac.ed.gamedevsoc.net.sessions.net.clientserver.SessionClient;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionConfig;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.net.clientserver.SessionClient;
 import crisisresponseteam.simulation.GameStateNavigate;
 import crisisresponseteam.simulation.GameStateWaiting;
 

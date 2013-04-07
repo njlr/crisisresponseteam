@@ -8,14 +8,14 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import crisisresponseteam.simulation.events.CommandLaunch;
 
-import uk.ac.ed.gamedevsoc.net.sessions.Command;
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerRemovedReasonReason;
-import uk.ac.ed.gamedevsoc.net.sessions.Session;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionClosedReason;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionHandler;
-import uk.ac.ed.gamedevsoc.net.sessions.net.clientserver.SessionClient;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.Command;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerRemovedReasonReason;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.Session;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionClosedReason;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionConfig;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionHandler;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.net.clientserver.SessionClient;
 
 public strictfp final class GameStateWaiting extends BasicGameState {
 	

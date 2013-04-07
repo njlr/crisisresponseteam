@@ -2,7 +2,7 @@ package crisisresponseteam.simulation.events;
 
 import java.io.Serializable;
 
-import uk.ac.ed.gamedevsoc.net.sessions.Command;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.Command;
 
 public strictfp abstract class Event implements Command, Serializable {
 	

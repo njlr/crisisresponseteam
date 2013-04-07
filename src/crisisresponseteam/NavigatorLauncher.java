@@ -11,11 +11,11 @@ import org.newdawn.slick.Game;
 import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfoUuid;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
-import uk.ac.ed.gamedevsoc.net.sessions.SysoutSessionHandler;
-import uk.ac.ed.gamedevsoc.net.sessions.net.clientserver.SessionClient;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerInfoUuid;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionConfig;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SysoutSessionHandler;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.net.clientserver.SessionClient;
 
 public strictfp final class NavigatorLauncher {
 	

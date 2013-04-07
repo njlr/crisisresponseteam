@@ -9,12 +9,12 @@ import org.newdawn.slick.Game;
 import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 
-import uk.ac.ed.gamedevsoc.net.sessions.PlayerInfo;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionConfig;
-import uk.ac.ed.gamedevsoc.net.sessions.SessionConfigText;
-import uk.ac.ed.gamedevsoc.net.sessions.SysoutSessionHandler;
-import uk.ac.ed.gamedevsoc.net.sessions.net.clientserver.LoopSessionHandler;
-import uk.ac.ed.gamedevsoc.net.sessions.net.clientserver.SessionServer;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.PlayerInfo;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionConfig;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SessionConfigText;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.SysoutSessionHandler;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.net.clientserver.LoopSessionHandler;
+import uk.ac.ed.eusa.gamedevsoc.net.sessions.net.clientserver.SessionServer;
 
 public strictfp final class GroundTeamLauncher {
 	
